@@ -6,24 +6,13 @@
   <a href="https://trendshift.io/repositories/16570?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-16570"><img src="https://trendshift.io/api/badge/repositories/16570" alt="sozercan/kaset | Trendshift" width="200" height="44"/></a>
 </p>
 
-## Branch Guide
-
-This personal fork uses two important branches:
-
-- `main` tracks the latest stable code from the upstream Kaset repository: [`sozercan/kaset`](https://github.com/sozercan/kaset).
-- `huynguyen-features` contains personal customizations and features maintained on top of upstream, including local playlists and local-build behavior.
-
-To update the personal branches, sync `main` from `upstream` first, then rebase
-the feature branch onto it:
-
-```bash
-git fetch upstream
-git switch main
-git rebase upstream/main
-git push origin main
-git switch huynguyen-features
-git rebase main
-```
+> **Personal fork:** This repository tracks
+> [`sozercan/kaset`](https://github.com/sozercan/kaset) while maintaining the
+> additional features listed below. See
+> [Maintaining the Personal Fork](docs/maintaining-personal-fork.md) for the
+> branch model and upstream synchronization workflow. When upstream changes
+> conflict with these features, their intended behavior is preserved and the
+> upstream implementation is adapted around them.
 
 <table>
   <tr>
@@ -37,6 +26,31 @@ git rebase main
 </table>
 
 ## Features
+
+### Added in This Fork
+
+The following features are maintained on top of the upstream Kaset repository:
+
+- 📚 **Local Guest Library and Playlists** — Use Library without signing in,
+  create and manage multiple playlists stored locally on this Mac, and add songs
+  from song menus throughout the app. Local playlists do not require or modify
+  a Google account.
+- 🛡️ **Experimental Track-Boundary Ad Handling** — Ad-blocking extensions may
+  not work reliably with YouTube Music playback inside WebKit. Two independent,
+  default-off options under Settings → General → Experimental provide narrow
+  fallbacks: **Skip end-of-track ads** advances through Kaset's normal queue
+  logic when an ad starts at the measured end of a song, while **Retry song on
+  pre-roll ads** reloads the same requested song once when an ad appears before
+  the music begins. These options do not block ad requests, do not handle
+  mid-roll ads, and cannot guarantee that YouTube will not return another ad.
+  See [Track-Boundary Advertisement Experiments](docs/track-boundary-ad-experiments.md)
+  for technical details.
+- ❎ **Close Button for the Sign-In Sheet** — Adds a Close button so the
+  sign-in sheet can be dismissed without authenticating. Google sign-in remains
+  available and continues to work normally whenever account features are
+  needed.
+- 🔒 **Local-Build Update Isolation** — Automatic Sparkle updates are disabled
+  so a personally built app is not silently replaced by an upstream release.
 
 ### Music & Video
 
@@ -102,6 +116,9 @@ brew install sozercan/repo/kaset
 > ```
 
 ## Contributing
+
+For branch ownership, topic-branch conventions, and upstream synchronization,
+see [Maintaining the Personal Fork](docs/maintaining-personal-fork.md).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, architecture, and coding guidelines.
 

@@ -106,6 +106,12 @@ that should be preserved when upstream `main` advances. Keep these changes in
 their own commits and update the branch by rebasing it onto the latest upstream
 branch:
 
+When upstream changes conflict with `huynguyen-features`, the intended behavior
+of the personal features has priority. Adapt the upstream implementation around
+those features instead of silently removing, disabling, or replacing them. If
+an upstream change makes a personal feature incompatible or requires changing
+its behavior, ask the human before proceeding.
+
 ```bash
 git fetch upstream
 git switch main
@@ -117,10 +123,11 @@ git rebase main
 ```
 
 When a rebase conflicts with upstream code, resolve the conflict deliberately
-and preserve the local-build behavior where it is still intended. Verify the
-result with `git diff upstream/main` and the normal build/test checks before
-merging or creating a pull request. Do not use force-push or destructive Git
-commands unless the human explicitly requests them.
+and preserve the intended local feature behavior while adapting it to the new
+upstream architecture. Verify the result with `git diff upstream/main` and the
+normal build/test checks before merging or creating a pull request. Do not use
+force-push or destructive Git commands unless the human explicitly requests
+them.
 
 ## Local Build and Installation
 
