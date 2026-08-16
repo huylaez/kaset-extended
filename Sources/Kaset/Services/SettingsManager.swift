@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 /// Manages user preferences persisted via UserDefaults.
 @MainActor
@@ -12,6 +13,7 @@ final class SettingsManager {
 
     enum Keys {
         static let appSource = "settings.appSource"
+        static let appAppearance = "settings.appAppearance"
         static let showNowPlayingNotifications = "settings.showNowPlayingNotifications"
         static let defaultLaunchPage = "settings.defaultLaunchPage"
         static let hapticFeedbackEnabled = "settings.hapticFeedbackEnabled"
@@ -39,6 +41,35 @@ final class SettingsManager {
         #if DEBUG
             static let useLegacyMacOS15UI = "settings.debug.useLegacyMacOS15UI"
         #endif
+    }
+
+    // MARK: - App Appearance
+
+    /// Controls whether the app follows the macOS appearance or uses a fixed color scheme.
+    enum AppAppearance: String, CaseIterable, Identifiable {
+        case system
+        case light
+        case dark
+
+        var id: String {
+            self.rawValue
+        }
+
+        var displayName: String {
+            switch self {
+            case .system: String(localized: "Auto")
+            case .light: String(localized: "Light")
+            case .dark: String(localized: "Dark")
+            }
+        }
+
+        var colorScheme: ColorScheme? {
+            switch self {
+            case .system: nil
+            case .light: .light
+            case .dark: .dark
+            }
+        }
     }
 
     // MARK: - Launch Page Options
@@ -247,6 +278,13 @@ final class SettingsManager {
     var appSource: AppSource {
         didSet {
             UserDefaults.standard.set(self.appSource.rawValue, forKey: Keys.appSource)
+        }
+    }
+
+    /// The color scheme used by the app windows.
+    var appAppearance: AppAppearance {
+        didSet {
+            UserDefaults.standard.set(self.appAppearance.rawValue, forKey: Keys.appAppearance)
         }
     }
 
@@ -510,6 +548,13 @@ final class SettingsManager {
         defaults.object(forKey: Keys.keepYouTubeVideoOnTop) as? Bool ?? false
     }
 
+    static func loadAppAppearance(from defaults: UserDefaults) -> AppAppearance {
+        guard let rawValue = defaults.string(forKey: Keys.appAppearance),
+              let appearance = AppAppearance(rawValue: rawValue)
+        else { return .system }
+        return appearance
+    }
+
     static func loadSkipEndOfTrackAds(from defaults: UserDefaults) -> Bool {
         defaults.object(forKey: Keys.skipEndOfTrackAds) as? Bool ?? false
     }
@@ -531,6 +576,7 @@ final class SettingsManager {
         self.showNowPlayingNotifications = UserDefaults.standard.object(forKey: Keys.showNowPlayingNotifications) as? Bool ?? true
         self.hapticFeedbackEnabled = UserDefaults.standard.object(forKey: Keys.hapticFeedbackEnabled) as? Bool ?? true
         self.rememberPlaybackSettings = UserDefaults.standard.object(forKey: Keys.rememberPlaybackSettings) as? Bool ?? false
+        self.appAppearance = Self.loadAppAppearance(from: UserDefaults.standard)
 
         // Load per-service enabled flags, migrating from legacy lastFMEnabled if needed
         if let stored = UserDefaults.standard.dictionary(forKey: Keys.enabledServices) as? [String: Bool] {

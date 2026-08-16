@@ -575,3 +575,6 @@
 "Start a new chat to continue." = "Avvia una nuova chat per continuare.";
 "Ask Gemini response ready" = "Risposta di Chiedi a Gemini pronta";
 "New Ask Gemini chat ready" = "Nuova chat di Chiedi a Gemini pronta";
+"Appearance" = "Aspetto";
+"Light" = "Chiaro";
+"Dark" = "Scuro";

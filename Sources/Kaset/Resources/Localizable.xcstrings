@@ -39045,6 +39045,26 @@
         }
       }
     },
+    "Appearance": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "المظهر" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Erscheinungsbild" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Apariencia" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Apparence" } },
+        "id": { "stringUnit": { "state": "translated", "value": "Tampilan" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Aspetto" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "모양" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Weergave" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Wygląd" } },
+        "pt": { "stringUnit": { "state": "translated", "value": "Aparência" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Оформление" } },
+        "sv": { "stringUnit": { "state": "translated", "value": "Utseende" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Görünüm" } },
+        "uk": { "stringUnit": { "state": "translated", "value": "Вигляд" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "外观" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "外觀" } }
+      }
+    },
     "Auto": {
       "localizations": {
         "ar": {
@@ -39143,6 +39163,46 @@
             "value": "自動"
           }
         }
+      }
+    },
+    "Dark": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "داكن" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Dunkel" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Oscuro" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Sombre" } },
+        "id": { "stringUnit": { "state": "translated", "value": "Gelap" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Scuro" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "어둡게" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Donker" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Ciemny" } },
+        "pt": { "stringUnit": { "state": "translated", "value": "Escuro" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Тёмная" } },
+        "sv": { "stringUnit": { "state": "translated", "value": "Mörkt" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Koyu" } },
+        "uk": { "stringUnit": { "state": "translated", "value": "Темна" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "深色" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "深色" } }
+      }
+    },
+    "Light": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "فاتح" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Hell" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Claro" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Clair" } },
+        "id": { "stringUnit": { "state": "translated", "value": "Terang" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Chiaro" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "밝게" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Licht" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Jasny" } },
+        "pt": { "stringUnit": { "state": "translated", "value": "Claro" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Светлая" } },
+        "sv": { "stringUnit": { "state": "translated", "value": "Ljust" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Açık" } },
+        "uk": { "stringUnit": { "state": "translated", "value": "Світла" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "浅色" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "淺色" } }
       }
     },
     "Back 30 seconds": {
