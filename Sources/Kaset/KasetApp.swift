@@ -233,6 +233,7 @@ struct KasetApp: App {
                     youtubeClient: self.sharedYouTubeClient
                 )
                 .id(self.settings.contentLanguage)
+                .preferredColorScheme(self.settings.appAppearance.colorScheme)
                 .environment(\.locale, self.settings.contentLanguage.locale)
                 .environment(self.authService)
                 .environment(self.webKitManager)
@@ -346,6 +347,7 @@ struct KasetApp: App {
         Settings {
             SettingsView()
                 .id(self.settings.contentLanguage)
+                .preferredColorScheme(self.settings.appAppearance.colorScheme)
                 .environment(\.locale, self.settings.contentLanguage.locale)
                 .environment(self.authService)
                 .environment(self.accountService)

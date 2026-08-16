@@ -41,6 +41,12 @@ struct GeneralSettingsView: View {
             // MARK: - Behavior Section
 
             Section {
+                Picker(String(localized: "Appearance"), selection: self.$settings.appAppearance) {
+                    ForEach(SettingsManager.AppAppearance.allCases) { appearance in
+                        Text(appearance.displayName).tag(appearance)
+                    }
+                }
+
                 // Haptic Feedback
                 Toggle("Haptic Feedback", isOn: self.$settings.hapticFeedbackEnabled)
                     .help(String(localized: "Provide tactile feedback for actions on Force Touch trackpads"))

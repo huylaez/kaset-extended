@@ -43,3 +43,8 @@
 "Start a new chat to continue." = "Start a new chat to continue.";
 "Ask Gemini response ready" = "Ask Gemini response ready";
 "New Ask Gemini chat ready" = "New Ask Gemini chat ready";
+
+// Appearance
+"Appearance" = "Appearance";
+"Light" = "Light";
+"Dark" = "Dark";

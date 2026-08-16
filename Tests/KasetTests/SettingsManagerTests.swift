@@ -52,6 +52,37 @@ struct SettingsManagerTests {
 
     // MARK: - Default Values Tests
 
+    // MARK: - AppAppearance Tests
+
+    @Test("AppAppearance raw values roundtrip correctly")
+    func appAppearanceRawValuesRoundtrip() {
+        for appearance in SettingsManager.AppAppearance.allCases {
+            #expect(SettingsManager.AppAppearance(rawValue: appearance.rawValue) == appearance)
+        }
+    }
+
+    @Test("Missing app appearance loads as system")
+    func missingAppAppearanceLoadsAsSystem() throws {
+        let suiteName = "SettingsManagerTests.appAppearance.missing.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        defaults.removePersistentDomain(forName: suiteName)
+
+        #expect(SettingsManager.loadAppAppearance(from: defaults) == .system)
+    }
+
+    @Test("Stored app appearance loads correctly")
+    func storedAppAppearanceLoadsCorrectly() throws {
+        let suiteName = "SettingsManagerTests.appAppearance.dark.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        defaults.set(SettingsManager.AppAppearance.dark.rawValue, forKey: SettingsManager.Keys.appAppearance)
+
+        #expect(SettingsManager.loadAppAppearance(from: defaults) == .dark)
+    }
+
     @Test("Default showNowPlayingNotifications is true")
     func defaultShowNowPlayingNotifications() {
         // Access the shared instance to check its default
