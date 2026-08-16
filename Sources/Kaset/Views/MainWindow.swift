@@ -660,9 +660,7 @@ struct MainWindow: View { // swiftlint:disable:this type_body_length
                     )
                 }
             case .library:
-                if self.requiresSignIn(item) {
-                    self.signInRequiredView(for: item)
-                } else if let vm = libraryViewModel {
+                if let vm = libraryViewModel {
                     LibraryView(viewModel: vm)
                 }
             case .history:
@@ -1071,8 +1069,10 @@ enum NavigationItem: String, Hashable, CaseIterable, Identifiable {
         switch self {
         case .home, .explore, .search, .charts, .moodsAndGenres, .newReleases, .podcasts:
             false
-        case .likedMusic, .library, .history:
+        case .likedMusic, .history:
             true
+        case .library:
+            false
         }
     }
 }

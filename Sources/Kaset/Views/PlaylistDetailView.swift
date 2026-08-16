@@ -437,6 +437,10 @@ struct PlaylistDetailView: View {
 
             Divider()
 
+            AddToLocalPlaylistContextMenu(song: track)
+
+            Divider()
+
             ShareContextMenu.menuItem(for: track)
 
             Divider()

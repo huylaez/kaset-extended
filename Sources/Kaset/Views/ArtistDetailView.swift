@@ -420,6 +420,10 @@ struct ArtistDetailView: View { // swiftlint:disable:this type_body_length
 
             Divider()
 
+            AddToLocalPlaylistContextMenu(song: song)
+
+            Divider()
+
             ShareContextMenu.menuItem(for: song)
 
             Divider()

@@ -173,24 +173,33 @@ extension PlaylistDetailView {
     private func deletePlaylistButton(_ detail: PlaylistDetail, showsTitles: Bool) -> some View {
         if detail.canDelete {
             Button(role: .destructive) {
-                SongActionsHelper.confirmDeletePlaylist(
-                    Playlist(
-                        id: detail.id,
-                        title: detail.title,
-                        description: detail.description,
-                        thumbnailURL: detail.thumbnailURL,
-                        trackCount: detail.trackCount,
-                        author: detail.author,
-                        canDelete: detail.canDelete
-                    ),
-                    client: self.viewModel.client,
-                    libraryViewModel: self.libraryViewModel,
-                    playerService: self.playerService
-                ) {
-                    if let onPlaylistDeleted = self.onPlaylistDeleted {
-                        onPlaylistDeleted()
-                    } else {
+                if self.playlist.isLocal {
+                    LocalPlaylistStore.shared.delete(id: detail.id)
+                    LibraryMutationBroadcaster.shared.localPlaylistsChanged()
+                    self.onPlaylistDeleted?()
+                    if self.onPlaylistDeleted == nil {
                         self.dismiss()
+                    }
+                } else {
+                    SongActionsHelper.confirmDeletePlaylist(
+                        Playlist(
+                            id: detail.id,
+                            title: detail.title,
+                            description: detail.description,
+                            thumbnailURL: detail.thumbnailURL,
+                            trackCount: detail.trackCount,
+                            author: detail.author,
+                            canDelete: detail.canDelete
+                        ),
+                        client: self.viewModel.client,
+                        libraryViewModel: self.libraryViewModel,
+                        playerService: self.playerService
+                    ) {
+                        if let onPlaylistDeleted = self.onPlaylistDeleted {
+                            onPlaylistDeleted()
+                        } else {
+                            self.dismiss()
+                        }
                     }
                 }
             } label: {

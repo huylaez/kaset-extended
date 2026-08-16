@@ -50,6 +50,8 @@ enum LibraryFilter: String, CaseIterable, Identifiable {
 struct LibraryView: View {
     @State var viewModel: LibraryViewModel
     @Environment(PlayerService.self) private var playerService
+    @Environment(AuthService.self) private var authService
+    @State private var localPlaylistStore = LocalPlaylistStore.shared
     @Environment(FavoritesManager.self) private var favoritesManager
     @Environment(\.usesLegacyMacOS15UI) private var usesLegacyMacOS15UI
     @State private var networkMonitor = NetworkMonitor.shared
@@ -64,7 +66,7 @@ struct LibraryView: View {
     var body: some View {
         NavigationStack(path: self.$navigationPath) {
             Group {
-                if !self.networkMonitor.isConnected {
+                if !self.networkMonitor.isConnected, self.authService.hasPersonalAccount {
                     ErrorView(
                         title: String(localized: "No Connection"),
                         message: String(localized: "Please check your internet connection and try again.")
@@ -141,7 +143,7 @@ struct LibraryView: View {
         }
         .task {
             if self.viewModel.loadingState == .idle {
-                await self.viewModel.load()
+                await self.viewModel.load(localOnly: !self.authService.hasPersonalAccount)
             }
             await self.viewModel.reloadIfNeededOnActivation()
         }
@@ -150,7 +152,7 @@ struct LibraryView: View {
             await self.viewModel.reloadIfNeededOnActivation()
         }
         .refreshable {
-            await self.viewModel.refresh()
+            await self.viewModel.refresh(localOnly: !self.authService.hasPersonalAccount)
         }
         .popsNavigationStackOnSidebarReselect(path: self.$navigationPath, for: .library)
     }
@@ -309,9 +311,13 @@ struct LibraryView: View {
     private var emptyStateMessage: String {
         switch self.selectedFilter {
         case .all:
-            String(localized: "Save playlists, follow artists, and subscribe to podcasts on YouTube Music to see them here.")
+            self.authService.hasPersonalAccount
+                ? String(localized: "Save playlists, follow artists, and subscribe to podcasts on YouTube Music to see them here.")
+                : "Create a local playlist from the sidebar to save music on this Mac."
         case .playlists:
-            String(localized: "Create or save playlists on YouTube Music to see them here.")
+            self.authService.hasPersonalAccount
+                ? String(localized: "Create or save playlists on YouTube Music to see them here.")
+                : "Create a local playlist from the sidebar to save music on this Mac."
         case .albums:
             String(localized: "Save albums on YouTube Music to see them here.")
         case .uploads:
@@ -364,7 +370,14 @@ struct LibraryView: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
-            if playlist.canDelete {
+            if playlist.isLocal {
+                Button(role: .destructive) {
+                    self.localPlaylistStore.delete(id: playlist.id)
+                    LibraryMutationBroadcaster.shared.localPlaylistsChanged()
+                } label: {
+                    Label(String(localized: "Delete Playlist…"), systemImage: "trash")
+                }
+            } else if playlist.canDelete {
                 Button(role: .destructive) {
                     SongActionsHelper.confirmDeletePlaylist(
                         playlist,

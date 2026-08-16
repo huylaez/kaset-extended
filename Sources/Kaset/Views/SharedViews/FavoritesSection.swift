@@ -194,6 +194,9 @@ struct FavoritesSection: View {
                 Divider()
                 AddToPlaylistContextMenu(song: song, client: client)
             }
+
+            Divider()
+            AddToLocalPlaylistContextMenu(song: song)
         }
 
         Divider()

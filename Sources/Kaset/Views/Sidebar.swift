@@ -16,6 +16,7 @@ struct Sidebar: View {
     @Environment(PlayerService.self) private var playerService
     @Environment(SidebarPinnedItemsManager.self) private var sidebarPinnedItemsManager
     @Environment(PodcastsAvailabilityService.self) private var podcastsAvailability
+    @State private var localPlaylistStore = LocalPlaylistStore.shared
     @State private var isCreatingPlaylist = false
     @State private var isHoveringPlaylistsHeader = false
 
@@ -50,12 +51,13 @@ struct Sidebar: View {
                 }
             }
 
-            if self.hasPersonalAccount {
-                // Collection section
-                Section(String(localized: "Collection")) {
-                    self.navigationRow(.library)
-                        .accessibilityIdentifier(AccessibilityID.Sidebar.libraryItem)
+            // Collection section. Library includes playlists stored on this Mac,
+            // while the remaining collection routes still require an account.
+            Section(String(localized: "Collection")) {
+                self.navigationRow(.library)
+                    .accessibilityIdentifier(AccessibilityID.Sidebar.libraryItem)
 
+                if self.hasPersonalAccount {
                     self.navigationRow(.likedMusic)
                         .accessibilityIdentifier(AccessibilityID.Sidebar.likedMusicItem)
 
@@ -64,17 +66,15 @@ struct Sidebar: View {
                 }
             }
 
-            if self.hasPersonalAccount {
-                Section {
-                    ForEach(self.sidebarPinnedItemsManager.items) { item in
-                        self.sidebarPinnedRow(item)
-                    }
-                    .onMove { source, destination in
-                        self.sidebarPinnedItemsManager.move(from: source, to: destination)
-                    }
-                } header: {
-                    self.playlistsSectionHeader
+            Section {
+                ForEach(self.sidebarPinnedItemsManager.items) { item in
+                    self.sidebarPinnedRow(item)
                 }
+                .onMove { source, destination in
+                    self.sidebarPinnedItemsManager.move(from: source, to: destination)
+                }
+            } header: {
+                self.playlistsSectionHeader
             }
         }
         .listStyle(.sidebar)
@@ -170,6 +170,12 @@ struct Sidebar: View {
 
     private func presentCreatePlaylistDialog() {
         guard !self.isCreatingPlaylist else { return }
+
+        if !self.hasPersonalAccount {
+            self.presentCreateLocalPlaylistDialog()
+            return
+        }
+
         let owner = self.playerService.currentAccountMutationOwner
 
         SongActionsHelper.presentCreatePlaylistDialog(
@@ -198,6 +204,39 @@ struct Sidebar: View {
                 }
             }
         )
+    }
+
+    private func presentCreateLocalPlaylistDialog() {
+        let alert = NSAlert()
+        alert.messageText = "Create Local Playlist"
+        alert.informativeText = "This playlist will be stored only on this Mac."
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Create")
+        alert.addButton(withTitle: "Cancel")
+
+        let titleField = NSTextField(frame: NSRect(x: 0, y: 0, width: 280, height: 24))
+        titleField.placeholderString = "Playlist name"
+        alert.accessoryView = titleField
+
+        let handleResponse: (NSApplication.ModalResponse) -> Void = { response in
+            guard response == .alertFirstButtonReturn else { return }
+            let title = titleField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !title.isEmpty else { return }
+
+            _ = self.localPlaylistStore.create(
+                title: title,
+                songs: self.playerService.queue
+            )
+            LibraryMutationBroadcaster.shared.localPlaylistsChanged()
+            self.selectNavigationItem(.library)
+            self.pinnedSelection = nil
+        }
+
+        if let window = NSApp.keyWindow ?? NSApp.mainWindow {
+            alert.beginSheetModal(for: window, completionHandler: handleResponse)
+        } else {
+            handleResponse(alert.runModal())
+        }
     }
 
     private func sidebarPinnedRow(_ item: SidebarPinnedItem) -> some View {
