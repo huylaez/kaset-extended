@@ -461,20 +461,6 @@ ${APP_LOCALIZATIONS_PLIST}
         </dict>
     </array>
 
-    <!-- Sparkle Auto-Update Configuration -->
-    <key>SUFeedURL</key>
-    <string>https://raw.githubusercontent.com/sozercan/kaset/main/appcast.xml</string>
-    <key>SUPublicEDKey</key>
-    <string>qa2zoeXHqn+pluxQSGjn5HyIYA/iFtrEJz7S1BoslpI=</string>
-    <key>SUEnableAutomaticChecks</key>
-    <true/>
-    <key>SUScheduledCheckInterval</key>
-    <integer>86400</integer>
-    <key>SUAllowsAutomaticUpdates</key>
-    <true/>
-    <key>SUEnableInstallerLauncherService</key>
-    <true/>
-
     <!-- AppleScript Support -->
     <key>NSAppleScriptEnabled</key>
     <true/>

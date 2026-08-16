@@ -8,12 +8,7 @@ struct GeneralSettingsView: View {
     @State private var isClearing = false
     @State private var signOutFailurePresented = false
 
-    /// The updater service for managing app updates.
-    var updaterService: UpdaterService
-
     var body: some View {
-        @Bindable var updater = self.updaterService
-
         Form {
             // MARK: - Account Section
 
@@ -113,35 +108,6 @@ struct GeneralSettingsView: View {
                     Text(String(localized: "Debug"))
                 }
             #endif
-
-            // MARK: - Updates Section
-
-            Section {
-                Toggle("Automatically check for updates", isOn: $updater.automaticChecksEnabled)
-
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(String(localized: "Software Update"))
-                        if let lastCheck = self.updaterService.lastUpdateCheckDate {
-                            Text("Last checked: \(lastCheck, format: .relative(presentation: .named))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        } else {
-                            Text(String(localized: "Never checked"))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    Spacer()
-                    Button(String(localized: "Check Now")) {
-                        self.updaterService.checkForUpdates()
-                    }
-                    .disabled(!self.updaterService.canCheckForUpdates)
-                }
-                .padding(.vertical, 4)
-            } header: {
-                Text(String(localized: "Updates"))
-            }
 
             // MARK: - About Section
 
