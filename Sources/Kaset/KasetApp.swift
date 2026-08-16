@@ -50,7 +50,6 @@ struct KasetApp: App {
     @State private var sharedClient: any YTMusicClientProtocol
     @State private var sharedYouTubeClient: any YouTubeClientProtocol
     @State private var notificationService: NotificationService?
-    @State private var updaterService = UpdaterService()
     @State private var favoritesManager = FavoritesManager.shared
     @State private var sidebarPinnedItemsManager = SidebarPinnedItemsManager.shared
     @State private var likeStatusManager = SongLikeStatusManager.shared
@@ -346,19 +345,10 @@ struct KasetApp: App {
                 .environment(\.locale, self.settings.contentLanguage.locale)
                 .environment(self.authService)
                 .environment(self.accountService)
-                .environment(self.updaterService)
                 .environment(self.scrobblingCoordinator)
                 .environment(self.equalizerService)
         }
         .commands {
-            // Check for Updates command in app menu
-            CommandGroup(after: .appInfo) {
-                Button(String(localized: "Check for Updates...")) {
-                    self.updaterService.checkForUpdates()
-                }
-                .disabled(!self.updaterService.canCheckForUpdates)
-            }
-
             // Playback commands — routed to whichever player is active
             // (the YouTube video player when it played last, music otherwise).
             CommandMenu("Playback") {
@@ -793,13 +783,12 @@ struct KasetApp: App {
 
 /// Main settings view with tabbed navigation.
 struct SettingsView: View {
-    @Environment(UpdaterService.self) private var updaterService
     @Environment(ScrobblingCoordinator.self) private var scrobblingCoordinator
     @State private var settings = SettingsManager.shared
 
     var body: some View {
         TabView {
-            GeneralSettingsView(updaterService: self.updaterService)
+            GeneralSettingsView()
                 .tabItem {
                     Label(String(localized: "General"), systemImage: "gearshape")
                 }
