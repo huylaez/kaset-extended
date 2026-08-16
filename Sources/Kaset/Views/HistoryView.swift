@@ -255,6 +255,10 @@ struct HistoryView: View {
 
             Divider()
 
+            AddToLocalPlaylistContextMenu(song: song)
+
+            Divider()
+
             if let artist = song.artists.first(where: { $0.hasNavigableId }) {
                 NavigationLink(value: artist) {
                     Label(String(localized: "Go to Artist"), systemImage: "person")

@@ -211,6 +211,10 @@ private struct QueueRowView: View {
 
             ShareContextMenu.menuItem(for: self.song)
 
+            Divider()
+
+            AddToLocalPlaylistContextMenu(song: self.song)
+
             if !self.isCurrentTrack {
                 Button(role: .destructive) {
                     self.onRemove()

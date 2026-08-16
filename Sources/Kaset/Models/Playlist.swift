@@ -85,6 +85,11 @@ struct Playlist: Identifiable, Codable, Hashable {
         self.id == Self.uploadedSongsBrowseID
     }
 
+    /// Whether this playlist is stored locally and never synchronized to YouTube.
+    var isLocal: Bool {
+        self.id.hasPrefix("local:")
+    }
+
     /// Whether continuations for this playlist require the user's account.
     var requiresPersonalAccountForContinuations: Bool {
         LikedMusicPlaylist.matches(id: self.id) || self.isUploadedSongs || self.canDelete

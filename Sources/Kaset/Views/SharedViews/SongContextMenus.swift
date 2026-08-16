@@ -264,3 +264,36 @@ struct AddToPlaylistContextMenu: View {
         )
     }
 }
+
+// MARK: - AddToLocalPlaylistContextMenu
+
+/// Adds a song to a playlist stored only on this Mac.
+struct AddToLocalPlaylistContextMenu: View {
+    let song: Song
+
+    @State private var localPlaylistStore = LocalPlaylistStore.shared
+
+    var body: some View {
+        Menu {
+            if self.localPlaylistStore.playlists.isEmpty {
+                Label(String(localized: "No Playlists"), systemImage: "music.note.list")
+            } else {
+                ForEach(self.localPlaylistStore.playlists) { playlist in
+                    let isAlreadyAdded = playlist.songs.contains { $0.videoId == self.song.videoId }
+                    Button {
+                        self.localPlaylistStore.add(self.song, to: playlist.id)
+                        LibraryMutationBroadcaster.shared.localPlaylistsChanged()
+                    } label: {
+                        Label(
+                            playlist.title,
+                            systemImage: isAlreadyAdded ? "checkmark.circle.fill" : "music.note.list"
+                        )
+                    }
+                    .disabled(isAlreadyAdded)
+                }
+            }
+        } label: {
+            Label(String(localized: "Add to Playlist"), systemImage: "internaldrive")
+        }
+    }
+}

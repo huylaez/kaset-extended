@@ -174,6 +174,8 @@ struct TopSongsView: View {
                 AddToPlaylistContextMenu(song: song, client: self.viewModel.client)
             }
 
+            AddToLocalPlaylistContextMenu(song: song)
+
             Divider()
 
             // Go to Artist - show first artist with valid ID

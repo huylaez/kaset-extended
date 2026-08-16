@@ -275,6 +275,18 @@ extension PlaylistDetailViewModel {
     }
 
     private func fetchInitialLoadResult(_ context: InitialLoadContext) async throws -> InitialLoadResult? {
+        if self.playlist.isLocal {
+            guard let detail = LocalPlaylistStore.shared.detail(for: self.playlist) else {
+                throw YTMusicError.unknown(message: "Local playlist is unavailable")
+            }
+            return InitialLoadResult(
+                detail: detail,
+                hasMore: false,
+                continuationToken: nil,
+                deferredLikedMusicMetadata: []
+            )
+        }
+
         let response = try await self.client.getPlaylist(id: self.playlist.id)
         guard self.canApplyInitialLoad(context) else { return nil }
 

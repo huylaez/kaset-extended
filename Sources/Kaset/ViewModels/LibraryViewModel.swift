@@ -63,6 +63,12 @@ final class LibraryMutationBroadcaster {
         }
     }
 
+    func localPlaylistsChanged() {
+        for libraryViewModel in self.activeLibraryViewModels {
+            libraryViewModel.localPlaylistsChanged()
+        }
+    }
+
     @discardableResult
     func reconcileCreatedPlaylist(
         _ playlist: Playlist,
@@ -293,6 +299,7 @@ final class LibraryViewModel {
     /// The API client (exposed for navigation to detail views).
     let client: any YTMusicClientProtocol
     private let logger = DiagnosticsLogger.api
+    private let localPlaylistStore = LocalPlaylistStore.shared
 
     init(client: any YTMusicClientProtocol, registerForLibraryMutations: Bool = true) {
         self.client = client
@@ -380,6 +387,16 @@ final class LibraryViewModel {
             self.logger.debug("Preserving existing artist snapshot because refresh fell back to landing preview")
         }
         self.librarySnapshot = result.snapshot
+        self.mergeLocalPlaylists()
+    }
+
+    private func mergeLocalPlaylists() {
+        let localPlaylists = self.localPlaylistStore.playlists.map(\.playlist)
+        var snapshot = self.librarySnapshot
+        snapshot.playlists = localPlaylists + snapshot.playlists.filter { !$0.isLocal }
+        snapshot.playlistIds = snapshot.playlistIds.filter { !$0.hasPrefix("local:") }
+        snapshot.playlistIds.formUnion(localPlaylists.map(\.id))
+        self.librarySnapshot = snapshot
     }
 
     private func finishDiscardedLoad() async {
@@ -396,6 +413,11 @@ final class LibraryViewModel {
     func markNeedsReloadOnActivation() {
         self.needsReloadOnActivation = true
         self.activationReloadGeneration &+= 1
+    }
+
+    /// Notifies this view model that a local playlist changed on disk.
+    func localPlaylistsChanged() {
+        self.mergeLocalPlaylists()
     }
 
     func reloadIfNeededOnActivation() async {
@@ -565,7 +587,7 @@ final class LibraryViewModel {
     }
 
     /// Loads library content (playlists, albums, artists, and podcasts).
-    func load() async {
+    func load(localOnly: Bool = false) async {
         guard self.loadingState != .loading else { return }
 
         if self.loadingState != .loadingMore {
@@ -573,6 +595,13 @@ final class LibraryViewModel {
         }
         let requestRevision = self.libraryStateRevision
         self.logger.info("Loading library content")
+
+        if localOnly {
+            self.librarySnapshot = .empty
+            self.mergeLocalPlaylists()
+            self.loadingState = .loaded
+            return
+        }
 
         do {
             let content = try await client.getLibraryContent()
@@ -638,7 +667,7 @@ final class LibraryViewModel {
     }
 
     /// Refreshes library content.
-    func refresh() async {
+    func refresh(localOnly: Bool = false) async {
         self.markLibraryStateChanged()
 
         if self.loadingState == .loading || self.loadingState == .loadingMore {
@@ -653,6 +682,6 @@ final class LibraryViewModel {
             self.librarySnapshot = .empty
         }
 
-        await self.load()
+        await self.load(localOnly: localOnly)
     }
 }

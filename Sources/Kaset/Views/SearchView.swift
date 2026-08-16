@@ -482,6 +482,10 @@ struct SearchView: View {
 
         Divider()
 
+        AddToLocalPlaylistContextMenu(song: song)
+
+        Divider()
+
         ShareContextMenu.menuItem(for: song)
 
         Divider()

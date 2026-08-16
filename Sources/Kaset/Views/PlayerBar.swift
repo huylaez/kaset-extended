@@ -860,6 +860,10 @@ struct PlayerBar: View { // swiftlint:disable:this type_body_length
             AddToPlaylistContextMenu(song: track, client: client)
         }
 
+        Divider()
+
+        AddToLocalPlaylistContextMenu(song: track)
+
         let artist = track.artists.first(where: { $0.hasNavigableId })
         let album = track.album
         if artist != nil || album?.hasNavigableId == true {
