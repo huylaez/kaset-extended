@@ -819,6 +819,15 @@ extension PlaylistDetailViewModel {
         )
     }
 
+    func removeLocalTrack(videoID: String) {
+        guard self.playlist.isLocal,
+              LocalPlaylistStore.shared.remove(videoID: videoID, from: self.playlist.id),
+              let detail = LocalPlaylistStore.shared.detail(for: self.playlist)
+        else { return }
+
+        self.replacePlaylistDetail(detail)
+    }
+
     func confirmTrackRemoval(_ removal: PlaylistTrackRemovalSnapshot) {
         guard let setVideoId = removal.song.playlistSetVideoId,
               self.pendingRemovedPlaylistSetVideoID == setVideoId
