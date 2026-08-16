@@ -7,7 +7,7 @@ extension PlayerService {
     /// Distance from `duration` at which a manual seek is treated as the end of the track.
     /// `video.currentTime = duration` does not reliably fire `ended` in WebKit, and a subsequent
     /// play call would restart the same song from 0 instead of advancing.
-    static let seekToEndThreshold: TimeInterval = 0.5
+    static let seekToEndThreshold = TrackBoundaryAdPolicy.terminalRemainingThreshold
 
     /// Routes a manual seek that landed at the end of the track through the track-ended path so
     /// repeat / queue / autoplay-suppression rules apply consistently with a natural end.
@@ -471,6 +471,10 @@ extension PlayerService {
         else { return }
         let currentSong = currentEntry.song
         self.songNearingEnd = false
+        self.beginTrackBoundaryAdPlaybackSelection(
+            videoID: currentSong.videoId,
+            queueEntryID: currentEntry.id
+        )
         let kasetAlignedWithQueue = self.pendingPlayVideoId == currentSong.videoId
             && self.currentWebPlaybackVideoId() == currentSong.videoId
         if self.hasUserInteractedThisSession, kasetAlignedWithQueue {

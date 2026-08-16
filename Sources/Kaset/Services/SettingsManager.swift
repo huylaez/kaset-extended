@@ -34,6 +34,8 @@ final class SettingsManager {
         static let ambientBackdropEnabled = "settings.ambientBackdropEnabled"
         static let ambientBackdropStyle = "settings.ambientBackdropStyle"
         static let popOutVideoOnNavigateAway = "settings.popOutVideoOnNavigateAway"
+        static let skipEndOfTrackAds = "settings.experimental.skipEndOfTrackAds"
+        static let retrySongOnPreRollAds = "settings.experimental.retrySongOnPreRollAds"
         #if DEBUG
             static let useLegacyMacOS15UI = "settings.debug.useLegacyMacOS15UI"
         #endif
@@ -448,6 +450,20 @@ final class SettingsManager {
         }
     }
 
+    /// Whether an advertisement starting at the measured terminal boundary completes the track.
+    var skipEndOfTrackAds: Bool {
+        didSet {
+            Self.storeSkipEndOfTrackAds(self.skipEndOfTrackAds, in: UserDefaults.standard)
+        }
+    }
+
+    /// Whether a measured pre-roll advertisement retries the requested track once.
+    var retrySongOnPreRollAds: Bool {
+        didSet {
+            Self.storeRetrySongOnPreRollAds(self.retrySongOnPreRollAds, in: UserDefaults.standard)
+        }
+    }
+
     /// The style the YouTube watch page should request: the chosen style when
     /// enabled, `.off` when the feature is disabled. Runtime energy/accessibility
     /// downgrades are applied inside `AmbientVideoBackdrop`, which observes those
@@ -494,6 +510,22 @@ final class SettingsManager {
         defaults.object(forKey: Keys.keepYouTubeVideoOnTop) as? Bool ?? false
     }
 
+    static func loadSkipEndOfTrackAds(from defaults: UserDefaults) -> Bool {
+        defaults.object(forKey: Keys.skipEndOfTrackAds) as? Bool ?? false
+    }
+
+    static func storeSkipEndOfTrackAds(_ enabled: Bool, in defaults: UserDefaults) {
+        defaults.set(enabled, forKey: Keys.skipEndOfTrackAds)
+    }
+
+    static func loadRetrySongOnPreRollAds(from defaults: UserDefaults) -> Bool {
+        defaults.object(forKey: Keys.retrySongOnPreRollAds) as? Bool ?? false
+    }
+
+    static func storeRetrySongOnPreRollAds(_ enabled: Bool, in defaults: UserDefaults) {
+        defaults.set(enabled, forKey: Keys.retrySongOnPreRollAds)
+    }
+
     private init() {
         // Load persisted settings or use defaults
         self.showNowPlayingNotifications = UserDefaults.standard.object(forKey: Keys.showNowPlayingNotifications) as? Bool ?? true
@@ -531,6 +563,8 @@ final class SettingsManager {
         )
         self.ambientBackdropEnabled = UserDefaults.standard.object(forKey: Keys.ambientBackdropEnabled) as? Bool ?? true
         self.popOutVideoOnNavigateAway = UserDefaults.standard.object(forKey: Keys.popOutVideoOnNavigateAway) as? Bool ?? true
+        self.skipEndOfTrackAds = Self.loadSkipEndOfTrackAds(from: UserDefaults.standard)
+        self.retrySongOnPreRollAds = Self.loadRetrySongOnPreRollAds(from: UserDefaults.standard)
         #if DEBUG
             self.useLegacyMacOS15UI = UserDefaults.standard.object(forKey: Keys.useLegacyMacOS15UI) as? Bool ?? false
         #endif

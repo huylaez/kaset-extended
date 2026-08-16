@@ -89,6 +89,7 @@ extension PlayerService {
 
     func play(videoId: String, intent: MusicPlaybackIntent) async {
         guard self.acceptsMusicPlaybackIntent(intent) else { return }
+        self.beginTrackBoundaryAdPlaybackSelection(videoID: videoId, queueEntryID: nil)
         self.logger.debug("play() called with videoId: \(videoId)")
         let acceptsPlaybackRequest = SingletonPlayerWebView.shared.acceptsPlaybackRequest(
             videoId: videoId,
@@ -200,9 +201,21 @@ extension PlayerService {
         startsPaused: Bool = false,
         restoreClock: MusicPlaybackRestoreClock? = nil,
         fetchesMetadata: Bool = true,
+        preservesPreRollAdRetryState: Bool = false,
         intent: MusicPlaybackIntent
     ) async {
         guard self.acceptsMusicPlaybackIntent(intent) else { return }
+        if preservesPreRollAdRetryState {
+            self.preserveTrackBoundaryAdPlaybackSelection(
+                videoID: song.videoId,
+                queueEntryID: queueEntryID
+            )
+        } else {
+            self.beginTrackBoundaryAdPlaybackSelection(
+                videoID: song.videoId,
+                queueEntryID: queueEntryID
+            )
+        }
         self.logger.info("Playing song: \(song.title)")
         let acceptsPlaybackRequest = SingletonPlayerWebView.shared.acceptsPlaybackRequest(
             videoId: song.videoId,
@@ -706,6 +719,7 @@ extension PlayerService {
         {
             let queueGeneration = self.queueLoadGeneration
             if self.progress > 3 {
+                self.restartTrackBoundaryAdPlaybackSelectionForCurrentTrack()
                 await self.seek(to: 0, intent: intent)
                 return
             }
@@ -740,6 +754,7 @@ extension PlayerService {
                 guard self.isCurrentQueueLoad(queueGeneration) else { return }
                 self.saveQueueForPersistence()
             } else {
+                self.restartTrackBoundaryAdPlaybackSelectionForCurrentTrack()
                 await self.seek(to: 0, intent: intent)
             }
             return
@@ -753,6 +768,7 @@ extension PlayerService {
         }
 
         if self.progress > 3 {
+            self.restartTrackBoundaryAdPlaybackSelectionForCurrentTrack()
             await self.seek(to: 0, intent: intent)
         } else {
             SingletonPlayerWebView.shared.previous()

@@ -1,5 +1,14 @@
 // Localizable.strings
 
+// Track-boundary advertisement experiments
+"Experimental" = "실험적 기능";
+"Skip end-of-track ads" = "트랙 종료 광고 건너뛰기";
+"When an ad starts after the current song has reached its end, Kaset automatically advances to the next song instead of playing the ad." = "현재 노래가 끝난 뒤 광고가 시작되면 Kaset이 광고를 재생하는 대신 자동으로 다음 노래로 넘어갑니다.";
+"Automatically advance when an ad starts after a song reaches its end. This experimental behavior may not detect every ad." = "노래가 끝난 뒤 광고가 시작되면 자동으로 다음 곡으로 넘어갑니다. 이 실험적 기능은 일부 광고를 감지하지 못할 수 있습니다.";
+"Retry song on pre-roll ads" = "프리롤 광고 시 노래 다시 시도";
+"When an ad starts before the current song begins, Kaset retries the same song once instead of advancing to another song." = "현재 노래가 시작되기 전에 광고가 나오면 Kaset이 다른 노래로 넘어가지 않고 같은 노래를 한 번 다시 시도합니다.";
+"Retry the current song once when a pre-roll ad is detected. YouTube may show another ad after the retry." = "프리롤 광고가 감지되면 현재 노래를 한 번 다시 시도합니다. 다시 시도한 뒤 YouTube에서 다른 광고를 표시할 수 있습니다.";
+
 "%lld songs" = "%lld곡";
 "%lld songs listened today" = "오늘 %lld곡 감상";
 "\"Live\" shifts the colors as the video plays; the others stay constant" = "\"실시간\"은 비디오 재생에 따라 색상이 변하고, 다른 옵션은 고정됩니다";

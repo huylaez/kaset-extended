@@ -22,6 +22,15 @@ final class PlayerService: NSObject, PlayerServiceProtocol {
         SettingsManager.shared.smartShuffleEnabled
     }
 
+    @ObservationIgnored var trackBoundaryAdSettingsProvider: @MainActor () -> TrackBoundaryAdSettings = {
+        TrackBoundaryAdSettings(
+            skipsEndOfTrackAds: SettingsManager.shared.skipEndOfTrackAds,
+            retriesPreRollAds: SettingsManager.shared.retrySongOnPreRollAds
+        )
+    }
+
+    @ObservationIgnored var preRollAdRetryState = PreRollAdRetryState()
+
     /// Numeric Smart Shuffle tuning consumed by the fill loop (`performSmartShuffleFill`).
     /// Injectable like ``smartShuffleFeatureEnabled`` so tests configure a single instance instead
     /// of mutating the shared `SettingsManager` singleton; mutating that singleton races across the
