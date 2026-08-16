@@ -94,35 +94,72 @@ The following features are maintained on top of the upstream Kaset repository:
 
 - macOS 15.4 or later
 - Apple Intelligence features require macOS 26.0 or later
-- [Google](https://accounts.google.com) account for YouTube Music and YouTube personalization
+- A [Google](https://accounts.google.com) account is required for account-based
+  YouTube Music and YouTube features
+- Guest users can use the local Library and local playlists without signing in
 
 ## Installation
 
-### Download
+### Kaset Extended Releases
 
-Download the latest release from the [Releases](https://github.com/sozercan/kaset/releases) page.
+Download the latest Kaset Extended build from the
+[Kaset Extended Releases](https://github.com/huylaez/kaset-extended/releases)
+page. Releases are unsigned personal builds.
 
-### Homebrew
+Because the application bundle is currently still named `Kaset.app`, installing
+it replaces the installed application at `/Applications/Kaset.app`.
+Quit Kaset first, then copy the downloaded app into Applications:
 
 ```bash
-brew install sozercan/repo/kaset
+ditto Kaset.app /Applications/Kaset.app
+open /Applications/Kaset.app
 ```
 
-> **Note:** The app is not signed.
-> If you downloaded the app manually, you can clear extended attributes (including quarantine) with:
->
-> ```bash
-> xattr -cr /Applications/Kaset.app
-> ```
+If macOS blocks the unsigned app after downloading it, you can approve it from
+the macOS user interface:
+
+1. Try opening the app once.
+2. Open **System Settings → Privacy & Security**.
+3. Scroll to the **Security** section.
+4. Click **Open Anyway** for Kaset Extended.
+5. Confirm by clicking **Open**.
+
+Alternatively, Control-click `Kaset.app`, choose **Open**, and confirm the
+prompt. Only bypass this warning if you obtained the app from a trusted source.
+
+Advanced users can clear the quarantine attribute from Terminal:
+
+```bash
+xattr -cr /Applications/Kaset.app
+```
+
+### Build Locally
+
+Build an unsigned local application from the current branch:
+
+```bash
+KASET_SIGNING=unsigned Scripts/build-app.sh release
+```
+
+The resulting application is `.build/app/Kaset.app`. To replace the installed
+application with this local build:
+
+```bash
+ditto .build/app/Kaset.app /Applications/Kaset.app
+open /Applications/Kaset.app
+```
+
+To create a DMG for local distribution, use `create-dmg` with the resulting
+application bundle. The DMG filename and volume label may identify it as a
+Kaset Extended build, while the application inside remains `Kaset.app`.
 
 ## Contributing
 
-For branch ownership, topic-branch conventions, and upstream synchronization,
-see [Maintaining the Personal Fork](docs/maintaining-personal-fork.md).
+For branch ownership, personal feature precedence, and branch maintenance, see
+[Maintaining the Personal Fork](docs/maintaining-personal-fork.md).
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, architecture, and coding guidelines.
-
-We welcome AI-assisted contributions! You can submit traditional PRs or **prompt requests** — share the AI prompt that generates your changes, and maintainers can review the intent before running the code. See the [AI-Assisted Contributions](CONTRIBUTING.md#ai-assisted-contributions--prompt-requests) section for details.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, architecture,
+and coding guidelines.
 
 ## Disclaimer
 
