@@ -1,5 +1,14 @@
 // Localizable.strings
 
+// Track-boundary advertisement experiments
+"Experimental" = "Deneysel";
+"Skip end-of-track ads" = "Parça sonu reklamlarını atla";
+"When an ad starts after the current song has reached its end, Kaset automatically advances to the next song instead of playing the ad." = "Geçerli şarkı sona ulaştıktan sonra bir reklam başlarsa Kaset reklamı oynatmak yerine otomatik olarak sonraki şarkıya geçer.";
+"Automatically advance when an ad starts after a song reaches its end. This experimental behavior may not detect every ad." = "Bir şarkı sona ulaştıktan sonra reklam başlarsa otomatik olarak ilerle. Bu deneysel davranış her reklamı algılamayabilir.";
+"Retry song on pre-roll ads" = "Video önü reklamlarda şarkıyı yeniden dene";
+"When an ad starts before the current song begins, Kaset retries the same song once instead of advancing to another song." = "Geçerli şarkı başlamadan önce bir reklam başlarsa Kaset başka bir şarkıya geçmek yerine aynı şarkıyı bir kez yeniden dener.";
+"Retry the current song once when a pre-roll ad is detected. YouTube may show another ad after the retry." = "Video önü reklam algılandığında geçerli şarkıyı bir kez yeniden dene. YouTube yeniden denemeden sonra başka bir reklam gösterebilir.";
+
 "%lld songs" = "%lld şarkı";
 "%lld songs listened today" = "Bugün %lld şarkı dinlendi";
 "\"Live\" shifts the colors as the video plays; the others stay constant" = "\"Canlı\", video oynatıldıkça renkleri değiştirir; diğerleri sabit kalır";

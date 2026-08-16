@@ -1,3 +1,11 @@
+// Track-boundary advertisement experiments
+"Experimental" = "Experimental";
+"Skip end-of-track ads" = "Skip end-of-track ads";
+"When an ad starts after the current song has reached its end, Kaset automatically advances to the next song instead of playing the ad." = "When an ad starts after the current song has reached its end, Kaset automatically advances to the next song instead of playing the ad.";
+"Automatically advance when an ad starts after a song reaches its end. This experimental behavior may not detect every ad." = "Automatically advance when an ad starts after a song reaches its end. This experimental behavior may not detect every ad.";
+"Retry song on pre-roll ads" = "Retry song on pre-roll ads";
+"When an ad starts before the current song begins, Kaset retries the same song once instead of advancing to another song." = "When an ad starts before the current song begins, Kaset retries the same song once instead of advancing to another song.";
+"Retry the current song once when a pre-roll ad is detected. YouTube may show another ad after the retry." = "Retry the current song once when a pre-roll ad is detected. YouTube may show another ad after the retry.";
 "%@ %@" = "%1$@ %2$@";
 "%@, %@, %@" = "%1$@, %2$@, %3$@";
 "Profiles" = "Profiles";

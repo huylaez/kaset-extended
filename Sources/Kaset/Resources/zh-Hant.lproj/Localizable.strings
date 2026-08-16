@@ -1,5 +1,14 @@
 // Localizable.strings
 
+// Track-boundary advertisement experiments
+"Experimental" = "實驗性功能";
+"Skip end-of-track ads" = "略過曲目結束時的廣告";
+"When an ad starts after the current song has reached its end, Kaset automatically advances to the next song instead of playing the ad." = "當廣告在目前歌曲結束後開始播放時，Kaset 會自動跳到下一首歌，而不是播放廣告。";
+"Automatically advance when an ad starts after a song reaches its end. This experimental behavior may not detect every ad." = "當廣告在歌曲結束後開始播放時自動跳到下一首。此實驗性功能可能無法偵測到所有廣告。";
+"Retry song on pre-roll ads" = "遇到片頭廣告時重試歌曲";
+"When an ad starts before the current song begins, Kaset retries the same song once instead of advancing to another song." = "當廣告在目前歌曲開始前播放時，Kaset 會重試同一首歌一次，而不是跳到另一首歌。";
+"Retry the current song once when a pre-roll ad is detected. YouTube may show another ad after the retry." = "偵測到片頭廣告時重試目前歌曲一次。重試後，YouTube 仍可能顯示另一則廣告。";
+
 "\"Live\" shifts the colors as the video plays; the others stay constant" = "「即時」會隨影片播放變換色彩，其他樣式則維持不變";
 "%lld songs" = "%lld 首歌曲";
 "%lld songs listened today" = "今日已聽 %lld 首歌曲";

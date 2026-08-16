@@ -626,8 +626,9 @@ private extension SingletonPlayerWebView.Coordinator {
             }
             let currentPlaybackOccurrence = self.playerService.currentMusicPlaybackOccurrence
             let terminalPlaybackOccurrence = currentPlaybackOccurrence ?? playbackOccurrence
+            var shouldBindPlaybackOccurrence = true
             defer {
-                if let playbackOccurrence {
+                if shouldBindPlaybackOccurrence, let playbackOccurrence {
                     self.playerService.bindWebMusicPlaybackOccurrence(
                         documentGeneration: documentGeneration,
                         mediaGeneration: playbackOccurrence.mediaGeneration,
@@ -640,6 +641,7 @@ private extension SingletonPlayerWebView.Coordinator {
                 hasReadyMedia: hasReadyMedia,
                 isShowingAd: isAd
             )
+            let wasShowingAd = self.playerService.isShowingAd
             self.playerService.updateAdPlaybackState(
                 isShowingAd: isAd,
                 observedProgress: Double(progress),
@@ -653,11 +655,28 @@ private extension SingletonPlayerWebView.Coordinator {
                     duration: Double(duration),
                     observedVideoId: playbackVideoId
                 )
+                self.playerService.recordAuthoritativeContentProgressForBoundaryAds(
+                    progress,
+                    observedVideoID: playbackVideoId
+                )
             } else if hasReadyMedia, isAd {
                 self.playerService.updatePlaybackTransportState(isPlaying: isPlaying)
                 if !isPlaying, self.playerService.shouldResumeReadyAdDuringRestoration {
                     SingletonPlayerWebView.shared.resumeReadyAdvertisementIfPresent()
                 }
+            }
+
+            if let transition = self.playerService.prepareTrackBoundaryAdTransition(
+                isAdRisingEdge: !wasShowingAd && isAd,
+                isCurrentDocument: SingletonPlayerWebView.shared.documentGeneration.accepts(
+                    generation: documentGeneration
+                ),
+                contentOccurrence: terminalPlaybackOccurrence,
+                intent: musicPlaybackIntent
+            ) {
+                shouldBindPlaybackOccurrence = false
+                await self.playerService.performTrackBoundaryAdTransition(transition)
+                return
             }
 
             // Update video availability
