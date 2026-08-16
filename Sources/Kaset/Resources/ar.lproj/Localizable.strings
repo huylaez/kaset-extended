@@ -1,5 +1,14 @@
 // Localizable.strings
 
+// Track-boundary advertisement experiments
+"Experimental" = "تجريبي";
+"Skip end-of-track ads" = "تخطي الإعلانات في نهاية المقطع";
+"When an ad starts after the current song has reached its end, Kaset automatically advances to the next song instead of playing the ad." = "عندما يبدأ إعلان بعد وصول الأغنية الحالية إلى نهايتها، ينتقل Kaset تلقائيًا إلى الأغنية التالية بدلًا من تشغيل الإعلان.";
+"Automatically advance when an ad starts after a song reaches its end. This experimental behavior may not detect every ad." = "الانتقال تلقائيًا عندما يبدأ إعلان بعد وصول الأغنية إلى نهايتها. قد لا يكتشف هذا السلوك التجريبي كل الإعلانات.";
+"Retry song on pre-roll ads" = "إعادة محاولة الأغنية عند إعلانات ما قبل التشغيل";
+"When an ad starts before the current song begins, Kaset retries the same song once instead of advancing to another song." = "عندما يبدأ إعلان قبل بدء الأغنية الحالية، يعيد Kaset محاولة تشغيل الأغنية نفسها مرة واحدة بدلًا من الانتقال إلى أغنية أخرى.";
+"Retry the current song once when a pre-roll ad is detected. YouTube may show another ad after the retry." = "إعادة محاولة الأغنية الحالية مرة واحدة عند اكتشاف إعلان ما قبل التشغيل. قد يعرض YouTube إعلانًا آخر بعد إعادة المحاولة.";
+
 "%lld songs" = "%lld أغنية";
 "%lld songs listened today" = "استمعت إلى %lld أغنية اليوم";
 "\"Live\" shifts the colors as the video plays; the others stay constant" = "يغيّر \"مباشر\" الألوان أثناء تشغيل الفيديو؛ بينما تبقى الخيارات الأخرى ثابتة";

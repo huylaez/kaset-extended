@@ -1,6 +1,706 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "Experimental": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تجريبي"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Experimentell"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Experimental"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expérimental"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eksperimental"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sperimentale"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "실험적 기능"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Experimenteel"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eksperymentalne"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Experimental"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Экспериментальные функции"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Experimentellt"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deneysel"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Експериментальні функції"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "实验性功能"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "實驗性功能"
+          }
+        }
+      }
+    },
+    "Skip end-of-track ads": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تخطي الإعلانات في نهاية المقطع"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Werbung am Titelende überspringen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omitir anuncios al final de la pista"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ignorer les publicités en fin de morceau"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lewati iklan di akhir lagu"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salta gli annunci a fine brano"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "트랙 종료 광고 건너뛰기"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Advertenties aan het einde overslaan"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pomijaj reklamy na końcu utworu"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ignorar anúncios no fim da faixa"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пропускать рекламу в конце трека"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoppa över reklam i slutet av spåret"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parça sonu reklamlarını atla"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пропускати рекламу в кінці треку"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跳过曲目结束时的广告"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "略過曲目結束時的廣告"
+          }
+        }
+      }
+    },
+    "When an ad starts after the current song has reached its end, Kaset automatically advances to the next song instead of playing the ad.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عندما يبدأ إعلان بعد وصول الأغنية الحالية إلى نهايتها، ينتقل Kaset تلقائيًا إلى الأغنية التالية بدلًا من تشغيل الإعلان."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn nach dem Ende des aktuellen Titels Werbung beginnt, wechselt Kaset automatisch zum nächsten Titel, statt die Werbung abzuspielen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando empieza un anuncio después de que termina la canción actual, Kaset avanza automáticamente a la siguiente canción en lugar de reproducir el anuncio."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lorsqu’une publicité commence après la fin du morceau actuel, Kaset passe automatiquement au morceau suivant au lieu de lire la publicité."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saat iklan dimulai setelah lagu saat ini berakhir, Kaset otomatis beralih ke lagu berikutnya alih-alih memutar iklan."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando un annuncio inizia dopo la fine del brano corrente, Kaset passa automaticamente al brano successivo invece di riprodurre l’annuncio."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "현재 노래가 끝난 뒤 광고가 시작되면 Kaset이 광고를 재생하는 대신 자동으로 다음 노래로 넘어갑니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wanneer een advertentie begint nadat het huidige nummer is afgelopen, gaat Kaset automatisch naar het volgende nummer in plaats van de advertentie af te spelen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gdy reklama rozpoczyna się po zakończeniu bieżącego utworu, Kaset automatycznie przechodzi do następnego utworu zamiast odtwarzać reklamę."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando um anúncio começa após o fim da música atual, o Kaset avança automaticamente para a próxima música em vez de reproduzir o anúncio."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Если реклама начинается после завершения текущего трека, Kaset автоматически переходит к следующему треку вместо воспроизведения рекламы."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "När en annons börjar efter att den aktuella låten har nått slutet går Kaset automatiskt vidare till nästa låt i stället för att spela annonsen."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçerli şarkı sona ulaştıktan sonra bir reklam başlarsa Kaset reklamı oynatmak yerine otomatik olarak sonraki şarkıya geçer."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Якщо реклама починається після завершення поточного треку, Kaset автоматично переходить до наступного треку замість відтворення реклами."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当广告在当前歌曲结束后开始播放时，Kaset 会自动跳到下一首歌，而不是播放广告。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "當廣告在目前歌曲結束後開始播放時，Kaset 會自動跳到下一首歌，而不是播放廣告。"
+          }
+        }
+      }
+    },
+    "Automatically advance when an ad starts after a song reaches its end. This experimental behavior may not detect every ad.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الانتقال تلقائيًا عندما يبدأ إعلان بعد وصول الأغنية إلى نهايتها. قد لا يكتشف هذا السلوك التجريبي كل الإعلانات."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatisch weiterschalten, wenn nach dem Ende eines Titels Werbung beginnt. Dieses experimentelle Verhalten erkennt möglicherweise nicht jede Werbung."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avanza automáticamente cuando empieza un anuncio después de que termina una canción. Es posible que este comportamiento experimental no detecte todos los anuncios."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passer automatiquement au morceau suivant lorsqu’une publicité commence après la fin d’un morceau. Ce comportement expérimental peut ne pas détecter toutes les publicités."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beralih otomatis saat iklan dimulai setelah lagu berakhir. Perilaku eksperimental ini mungkin tidak mendeteksi setiap iklan."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passa automaticamente al brano successivo quando un annuncio inizia dopo la fine di un brano. Questo comportamento sperimentale potrebbe non rilevare tutti gli annunci."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "노래가 끝난 뒤 광고가 시작되면 자동으로 다음 곡으로 넘어갑니다. 이 실험적 기능은 일부 광고를 감지하지 못할 수 있습니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ga automatisch verder wanneer een advertentie begint nadat een nummer is afgelopen. Dit experimentele gedrag detecteert mogelijk niet elke advertentie."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatycznie przechodź dalej, gdy reklama rozpoczyna się po zakończeniu utworu. Ta eksperymentalna funkcja może nie wykryć każdej reklamy."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avance automaticamente quando um anúncio começar após o fim de uma música. Este comportamento experimental pode não detectar todos os anúncios."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Автоматически переходить дальше, если реклама начинается после завершения трека. Эта экспериментальная функция может обнаруживать не все объявления."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gå automatiskt vidare när en annons börjar efter att en låt har nått slutet. Den här experimentella funktionen kanske inte upptäcker alla annonser."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir şarkı sona ulaştıktan sonra reklam başlarsa otomatik olarak ilerle. Bu deneysel davranış her reklamı algılamayabilir."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Автоматично переходити далі, якщо реклама починається після завершення треку. Ця експериментальна функція може виявляти не всі оголошення."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当广告在歌曲结束后开始播放时自动跳到下一首。此实验性功能可能无法检测到所有广告。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "當廣告在歌曲結束後開始播放時自動跳到下一首。此實驗性功能可能無法偵測到所有廣告。"
+          }
+        }
+      }
+    },
+    "Retry song on pre-roll ads": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة محاولة الأغنية عند إعلانات ما قبل التشغيل"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titel bei Pre-Roll-Werbung erneut versuchen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reintentar la canción con anuncios pre-roll"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réessayer le morceau lors des publicités pré-roll"
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coba ulang lagu saat iklan pre-roll"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprova il brano con gli annunci pre-roll"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "프리롤 광고 시 노래 다시 시도"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nummer opnieuw proberen bij pre-rolladvertenties"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponawiaj utwór przy reklamach pre-roll"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tentar novamente a música em anúncios pre-roll"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Повторять попытку при рекламе перед треком"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Försök låten igen vid pre-roll-reklam"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Video önü reklamlarda şarkıyı yeniden dene"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Повторювати спробу при рекламі перед треком"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遇到片头广告时重试歌曲"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遇到片頭廣告時重試歌曲"
+          }
+        }
+      }
+    },
+    "When an ad starts before the current song begins, Kaset retries the same song once instead of advancing to another song.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عندما يبدأ إعلان قبل بدء الأغنية الحالية، يعيد Kaset محاولة تشغيل الأغنية نفسها مرة واحدة بدلًا من الانتقال إلى أغنية أخرى."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn Werbung beginnt, bevor der aktuelle Titel startet, versucht Kaset denselben Titel einmal erneut, statt zu einem anderen Titel zu wechseln."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando empieza un anuncio antes de que comience la canción actual, Kaset vuelve a intentar la misma canción una vez en lugar de avanzar a otra."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lorsqu’une publicité commence avant le morceau actuel, Kaset réessaie ce même morceau une fois au lieu de passer à un autre."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saat iklan dimulai sebelum lagu saat ini mulai, Kaset mencoba ulang lagu yang sama satu kali alih-alih beralih ke lagu lain."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando un annuncio inizia prima del brano corrente, Kaset riprova una volta lo stesso brano invece di passare a un altro."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "현재 노래가 시작되기 전에 광고가 나오면 Kaset이 다른 노래로 넘어가지 않고 같은 노래를 한 번 다시 시도합니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wanneer een advertentie begint voordat het huidige nummer start, probeert Kaset hetzelfde nummer één keer opnieuw in plaats van naar een ander nummer te gaan."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gdy reklama rozpoczyna się przed bieżącym utworem, Kaset ponawia ten sam utwór raz zamiast przechodzić do innego."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando um anúncio começa antes da música atual, o Kaset tenta novamente a mesma música uma vez em vez de avançar para outra."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Если реклама начинается до текущего трека, Kaset один раз повторно запускает тот же трек вместо перехода к другому."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "När en annons börjar innan den aktuella låten startar försöker Kaset samma låt igen en gång i stället för att gå vidare till en annan låt."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geçerli şarkı başlamadan önce bir reklam başlarsa Kaset başka bir şarkıya geçmek yerine aynı şarkıyı bir kez yeniden dener."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Якщо реклама починається до поточного треку, Kaset один раз повторно запускає той самий трек замість переходу до іншого."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当广告在当前歌曲开始前播放时，Kaset 会重试同一首歌一次，而不是跳到另一首歌。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "當廣告在目前歌曲開始前播放時，Kaset 會重試同一首歌一次，而不是跳到另一首歌。"
+          }
+        }
+      }
+    },
+    "Retry the current song once when a pre-roll ad is detected. YouTube may show another ad after the retry.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إعادة محاولة الأغنية الحالية مرة واحدة عند اكتشاف إعلان ما قبل التشغيل. قد يعرض YouTube إعلانًا آخر بعد إعادة المحاولة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den aktuellen Titel einmal erneut versuchen, wenn Pre-Roll-Werbung erkannt wird. YouTube kann nach dem erneuten Versuch eine weitere Werbung zeigen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuelve a intentar la canción actual una vez cuando se detecte un anuncio pre-roll. YouTube puede mostrar otro anuncio después del reintento."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réessayer le morceau actuel une fois lorsqu’une publicité pré-roll est détectée. YouTube peut afficher une autre publicité après la nouvelle tentative."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coba ulang lagu saat ini satu kali saat iklan pre-roll terdeteksi. YouTube mungkin menampilkan iklan lain setelah percobaan ulang."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprova una volta il brano corrente quando viene rilevato un annuncio pre-roll. YouTube potrebbe mostrare un altro annuncio dopo il nuovo tentativo."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "프리롤 광고가 감지되면 현재 노래를 한 번 다시 시도합니다. 다시 시도한 뒤 YouTube에서 다른 광고를 표시할 수 있습니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probeer het huidige nummer één keer opnieuw wanneer een pre-rolladvertentie wordt gedetecteerd. YouTube kan na de nieuwe poging nog een advertentie tonen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponów bieżący utwór raz po wykryciu reklamy pre-roll. YouTube może wyświetlić kolejną reklamę po ponownej próbie."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tente novamente a música atual uma vez quando um anúncio pre-roll for detectado. O YouTube pode mostrar outro anúncio após a nova tentativa."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Один раз повторно запустить текущий трек при обнаружении рекламы перед ним. После повторной попытки YouTube может показать другую рекламу."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Försök den aktuella låten igen en gång när pre-roll-reklam upptäcks. YouTube kan visa en annan annons efter försöket."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Video önü reklam algılandığında geçerli şarkıyı bir kez yeniden dene. YouTube yeniden denemeden sonra başka bir reklam gösterebilir."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Один раз повторно запустити поточний трек при виявленні реклами перед ним. Після повторної спроби YouTube може показати іншу рекламу."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检测到片头广告时重试当前歌曲一次。重试后，YouTube 仍可能显示另一则广告。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偵測到片頭廣告時重試目前歌曲一次。重試後，YouTube 仍可能顯示另一則廣告。"
+          }
+        }
+      }
+    },
     "Smart Shuffle": {
       "localizations": {
         "ar": {

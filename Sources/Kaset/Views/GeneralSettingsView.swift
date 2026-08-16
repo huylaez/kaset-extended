@@ -55,6 +55,50 @@ struct GeneralSettingsView: View {
                 Text(String(localized: "Behavior"))
             }
 
+            // MARK: - Experimental Section
+
+            Section {
+                VStack(alignment: .leading, spacing: 4) {
+                    Toggle(
+                        String(localized: "Skip end-of-track ads"),
+                        isOn: self.$settings.skipEndOfTrackAds
+                    )
+                    Text(
+                        String(
+                            localized: "When an ad starts after the current song has reached its end, Kaset automatically advances to the next song instead of playing the ad."
+                        )
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+                .help(
+                    String(
+                        localized: "Automatically advance when an ad starts after a song reaches its end. This experimental behavior may not detect every ad."
+                    )
+                )
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Toggle(
+                        String(localized: "Retry song on pre-roll ads"),
+                        isOn: self.$settings.retrySongOnPreRollAds
+                    )
+                    Text(
+                        String(
+                            localized: "When an ad starts before the current song begins, Kaset retries the same song once instead of advancing to another song."
+                        )
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+                .help(
+                    String(
+                        localized: "Retry the current song once when a pre-roll ad is detected. YouTube may show another ad after the retry."
+                    )
+                )
+            } header: {
+                Text(String(localized: "Experimental"))
+            }
+
             // MARK: - Language Section
 
             Section {

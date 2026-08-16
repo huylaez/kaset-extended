@@ -126,6 +126,43 @@ struct SettingsManagerTests {
         #expect(SettingsManager.loadKeepYouTubeVideoOnTop(from: defaults) == false)
     }
 
+    @Test("Track-boundary advertisement experiments default to disabled")
+    func trackBoundaryAdvertisementExperimentsDefaultToDisabled() throws {
+        let suiteName = "SettingsManagerTests.trackBoundaryAds.missing.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.removePersistentDomain(forName: suiteName)
+
+        #expect(!SettingsManager.loadSkipEndOfTrackAds(from: defaults))
+        #expect(!SettingsManager.loadRetrySongOnPreRollAds(from: defaults))
+    }
+
+    @Test("Skip end-of-track ads persists in an isolated defaults domain")
+    func skipEndOfTrackAdsPersistsInIsolatedDomain() throws {
+        let suiteName = "SettingsManagerTests.trackBoundaryAds.end.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.removePersistentDomain(forName: suiteName)
+
+        SettingsManager.storeSkipEndOfTrackAds(true, in: defaults)
+        #expect(SettingsManager.loadSkipEndOfTrackAds(from: defaults))
+        SettingsManager.storeSkipEndOfTrackAds(false, in: defaults)
+        #expect(!SettingsManager.loadSkipEndOfTrackAds(from: defaults))
+    }
+
+    @Test("Retry song on pre-roll ads persists in an isolated defaults domain")
+    func retrySongOnPreRollAdsPersistsInIsolatedDomain() throws {
+        let suiteName = "SettingsManagerTests.trackBoundaryAds.preRoll.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.removePersistentDomain(forName: suiteName)
+
+        SettingsManager.storeRetrySongOnPreRollAds(true, in: defaults)
+        #expect(SettingsManager.loadRetrySongOnPreRollAds(from: defaults))
+        SettingsManager.storeRetrySongOnPreRollAds(false, in: defaults)
+        #expect(!SettingsManager.loadRetrySongOnPreRollAds(from: defaults))
+    }
+
     @Test("keepYouTubeVideoOnTop persists to shared UserDefaults")
     func keepYouTubeVideoOnTopPersists() {
         let manager = SettingsManager.shared

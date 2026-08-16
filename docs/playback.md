@@ -119,6 +119,38 @@ Swift validates that the ended `videoId` still matches the expected queue song
 before advancing. This prevents stale `ended` events from double-advancing the
 queue after Kaset has already loaded the next track.
 
+### Experimental Track-Boundary Advertisement Handling
+
+Settings → General → Experimental contains two independent, default-off options
+for advertisements observed at a track boundary:
+
+- **Skip end-of-track ads** treats a newly observed advertisement as the
+  current track's terminal event only when the last authoritative content clock
+  belongs to the requested track, `songNearingEnd` is set, and no more than
+  `0.5` seconds remain. The transition goes through `handleTrackEnded(...)`, so
+  queue-end, repeat, pause-intent, and duplicate-occurrence rules remain the
+  same as a natural `TRACK_ENDED` event.
+- **Retry song on pre-roll ads** retries the same requested queue item once when
+  an advertisement begins before any positive authoritative content progress.
+  The retry never advances the queue. A second pre-roll advertisement is left
+  to YouTube so Kaset cannot enter an automatic reload loop.
+
+These options do not block requests or modify YouTube responses, and they do
+not handle mid-roll advertisements. They react only to a new `false → true`
+advertisement-state edge, so enabling a setting while an advertisement is
+already playing has no retroactive effect. A manual seek back to `0:00` does
+not create a new pre-roll opportunity after content has started.
+
+The initial thresholds were selected from a sanitized runtime trace. The
+observed pre-roll advertisement started at `0.0` before any authoritative
+content sample. The observed end advertisement started with approximately
+`0.021` seconds remaining (`183.772 / 183.7935`) and no preceding accepted
+`TRACK_ENDED` event.
+
+See [Track-Boundary Advertisement Experiments](track-boundary-ad-experiments.md)
+for the investigation evidence, decision policies, occurrence ownership, retry
+state, race protections, and current limitations.
+
 ## Track Changing
 
 When user plays a different track:
