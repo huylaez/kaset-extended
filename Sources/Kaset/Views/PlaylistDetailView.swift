@@ -470,7 +470,18 @@ struct PlaylistDetailView: View {
             }
         }
 
-        if self.canRemoveTrack(track) {
+        if self.playlist.isLocal {
+            if track.isPlayable {
+                Divider()
+            }
+
+            Button(role: .destructive) {
+                self.viewModel.removeLocalTrack(videoID: track.videoId)
+                LibraryMutationBroadcaster.shared.localPlaylistsChanged()
+            } label: {
+                Label(String(localized: "Remove from Playlist"), systemImage: "minus.circle")
+            }
+        } else if self.canRemoveTrack(track) {
             if track.isPlayable {
                 Divider()
             }

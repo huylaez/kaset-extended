@@ -83,6 +83,19 @@ final class LocalPlaylistStore {
         self.saveToDisk()
     }
 
+    @discardableResult
+    func remove(videoID: String, from playlistID: String) -> Bool {
+        guard let index = self.playlists.firstIndex(where: { $0.id == playlistID }) else { return false }
+
+        let originalCount = self.playlists[index].songs.count
+        self.playlists[index].songs.removeAll { $0.videoId == videoID }
+        guard self.playlists[index].songs.count != originalCount else { return false }
+
+        self.playlists[index].modifiedAt = Date()
+        self.saveToDisk()
+        return true
+    }
+
     func detail(for playlist: Playlist) -> PlaylistDetail? {
         self.playlist(id: playlist.id)?.detail
     }

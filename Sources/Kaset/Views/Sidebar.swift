@@ -67,6 +67,10 @@ struct Sidebar: View {
             }
 
             Section {
+                ForEach(self.localPlaylistStore.playlists) { playlist in
+                    self.localPlaylistRow(playlist)
+                }
+
                 ForEach(self.sidebarPinnedItemsManager.items) { item in
                     self.sidebarPinnedRow(item)
                 }
@@ -225,7 +229,7 @@ struct Sidebar: View {
 
             _ = self.localPlaylistStore.create(
                 title: title,
-                songs: self.playerService.queue
+                songs: []
             )
             LibraryMutationBroadcaster.shared.localPlaylistsChanged()
             self.selectNavigationItem(.library)
@@ -236,6 +240,17 @@ struct Sidebar: View {
             alert.beginSheetModal(for: window, completionHandler: handleResponse)
         } else {
             handleResponse(alert.runModal())
+        }
+    }
+
+    private func localPlaylistRow(_ playlist: LocalPlaylist) -> some View {
+        let item = SidebarPinnedItem.from(playlist.playlist)
+        return KasetSidebarRow(
+            title: item.title,
+            systemImage: item.systemImage,
+            isSelected: self.currentSidebarSelection == .pinned(item)
+        ) {
+            self.selectPinnedItem(item)
         }
     }
 
