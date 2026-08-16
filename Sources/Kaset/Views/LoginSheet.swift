@@ -172,6 +172,17 @@ struct LoginSheet: View {
 
                 Spacer()
 
+                Button {
+                    self.closeLoginSheet()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .keyboardShortcut(.cancelAction)
+                .accessibilityLabel("Close")
+
                 if self.isCheckingLogin {
                     ProgressView()
                         .controlSize(.small)
@@ -185,6 +196,14 @@ struct LoginSheet: View {
                 .foregroundStyle(.secondary)
         }
         .padding()
+    }
+
+    private func closeLoginSheet() {
+        if let loginAttemptID = self.loginAttemptID {
+            self.cancelAndDismissIfCurrent(loginAttemptID)
+        } else {
+            self.dismiss()
+        }
     }
 
     private func prepareLoginAttempt() async {
