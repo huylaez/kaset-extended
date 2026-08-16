@@ -6,6 +6,25 @@
   <a href="https://trendshift.io/repositories/16570?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-16570"><img src="https://trendshift.io/api/badge/repositories/16570" alt="sozercan/kaset | Trendshift" width="200" height="44"/></a>
 </p>
 
+## Branch Guide
+
+This personal fork uses two important branches:
+
+- `main` tracks the latest stable code from the upstream Kaset repository: [`sozercan/kaset`](https://github.com/sozercan/kaset).
+- `huynguyen-features` contains personal customizations and features maintained on top of upstream, including local playlists and local-build behavior.
+
+To update the personal branches, sync `main` from `upstream` first, then rebase
+the feature branch onto it:
+
+```bash
+git fetch upstream
+git switch main
+git rebase upstream/main
+git push origin main
+git switch huynguyen-features
+git rebase main
+```
+
 <table>
   <tr>
     <th>YouTube Music</th>

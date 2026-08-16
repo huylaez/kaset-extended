@@ -98,3 +98,53 @@ These are project-specific rules that differ from standard Swift/SwiftUI convent
 ## Task Planning
 
 For non-trivial tasks: **Research → Plan → Get approval → Implement → QA**. Run `swift build` continuously during implementation. If things go wrong, revert and re-scope rather than patching.
+
+## Maintaining Local Customizations
+
+The `huynguyen-features` branch contains personal local-build changes
+that should be preserved when upstream `main` advances. Keep these changes in
+their own commits and update the branch by rebasing it onto the latest upstream
+branch:
+
+```bash
+git fetch upstream
+git switch main
+git rebase upstream/main
+git push origin main
+
+git switch huynguyen-features
+git rebase main
+```
+
+When a rebase conflicts with upstream code, resolve the conflict deliberately
+and preserve the local-build behavior where it is still intended. Verify the
+result with `git diff upstream/main` and the normal build/test checks before
+merging or creating a pull request. Do not use force-push or destructive Git
+commands unless the human explicitly requests them.
+
+## Local Build and Installation
+
+For a personal unsigned build, use the repository packaging script:
+
+```bash
+KASET_SIGNING=unsigned Scripts/build-app.sh release
+```
+
+The resulting app is `.build/app/Kaset.app`. To run it without replacing the
+installed app:
+
+```bash
+open .build/app/Kaset.app
+```
+
+To replace the installed app, first quit Kaset and then run:
+
+```bash
+ditto .build/app/Kaset.app /Applications/Kaset.app
+open /Applications/Kaset.app
+```
+
+Only replace the installed app when the human explicitly requests it. Do not
+run UI tests without confirmation. When the human requests installation or
+replacement, provide the commands for the human to run; do not execute those
+installation or replacement commands autonomously.
