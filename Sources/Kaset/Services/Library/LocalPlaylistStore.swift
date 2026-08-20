@@ -37,9 +37,65 @@ final class LocalPlaylistStore {
 
     private(set) var playlists: [LocalPlaylist] = []
     private let logger = DiagnosticsLogger.ui
+    private let storageURL: URL?
 
     private init() {
+        self.storageURL = Self.defaultStorageURL
         self.loadFromDisk()
+    }
+
+    /// Creates an isolated store that keeps playlists in memory only.
+    /// Intended for tests and previews that must not access persisted user data.
+    init(inMemory: Void = ()) {
+        self.storageURL = nil
+    }
+
+    private static var defaultStorageURL: URL? {
+        guard let applicationSupport = FileManager.default.urls(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask
+        ).first else {
+            return nil
+        }
+        return applicationSupport
+            .appendingPathComponent("Kaset", isDirectory: true)
+            .appendingPathComponent("local-playlists.json")
+    }
+
+    private var persistsPlaylists: Bool {
+        self.storageURL != nil
+    }
+
+    private func loadFromDisk() {
+        guard let storageURL = self.storageURL,
+              let data = try? Data(contentsOf: storageURL)
+        else { return }
+
+        do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .millisecondsSince1970
+            self.playlists = try decoder.decode([LocalPlaylist].self, from: data)
+        } catch {
+            self.logger.error("Failed to load local playlists: \(error.localizedDescription)")
+        }
+    }
+
+    private func saveToDisk() {
+        guard self.persistsPlaylists, let storageURL = self.storageURL else { return }
+
+        do {
+            try FileManager.default.createDirectory(
+                at: storageURL.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            encoder.dateEncodingStrategy = .millisecondsSince1970
+            let data = try encoder.encode(self.playlists)
+            try data.write(to: storageURL, options: .atomic)
+        } catch {
+            self.logger.error("Failed to save local playlists: \(error.localizedDescription)")
+        }
     }
 
     var hasPlaylists: Bool {
@@ -100,50 +156,4 @@ final class LocalPlaylistStore {
         self.playlist(id: playlist.id)?.detail
     }
 
-    private var storageURL: URL? {
-        guard let applicationSupport = FileManager.default.urls(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask
-        ).first else {
-            return nil
-        }
-        return applicationSupport
-            .appendingPathComponent("Kaset", isDirectory: true)
-            .appendingPathComponent("local-playlists.json")
-    }
-
-    private func loadFromDisk() {
-        guard let storageURL = self.storageURL,
-              let data = try? Data(contentsOf: storageURL)
-        else { return }
-
-        do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .millisecondsSince1970
-            self.playlists = try decoder.decode([LocalPlaylist].self, from: data)
-        } catch {
-            self.logger.error("Failed to load local playlists: \(error.localizedDescription)")
-        }
-    }
-
-    private func saveToDisk() {
-        guard let storageURL = self.storageURL else {
-            self.logger.error("Local playlist storage directory is unavailable")
-            return
-        }
-
-        do {
-            try FileManager.default.createDirectory(
-                at: storageURL.deletingLastPathComponent(),
-                withIntermediateDirectories: true
-            )
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            encoder.dateEncodingStrategy = .millisecondsSince1970
-            let data = try encoder.encode(self.playlists)
-            try data.write(to: storageURL, options: .atomic)
-        } catch {
-            self.logger.error("Failed to save local playlists: \(error.localizedDescription)")
-        }
-    }
 }

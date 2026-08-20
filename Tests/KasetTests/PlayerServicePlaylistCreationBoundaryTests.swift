@@ -39,7 +39,7 @@ extension LibraryMutationSerialTests {
 
         @Test("An account switch during playlist reconciliation removes the stale optimistic playlist")
         func accountSwitchDuringPlaylistReconciliationRemovesOptimisticPlaylist() async {
-            let libraryViewModel = LibraryViewModel(client: self.mockClient)
+            let libraryViewModel = TestFixtures.makeLibraryViewModel(client: self.mockClient)
             let songs = [TestFixtures.makeSong(id: "reconcile-account-switch")]
             let owner = self.playerService.currentAccountMutationOwner
             self.mockClient.shouldWaitForLibraryContentResponse = true
@@ -73,7 +73,7 @@ extension LibraryMutationSerialTests {
 
         @Test("Account boundary drains queue-playlist reconciliation before reopening")
         func accountBoundaryDrainsQueuePlaylistReconciliation() async {
-            let libraryViewModel = LibraryViewModel(client: self.mockClient)
+            let libraryViewModel = TestFixtures.makeLibraryViewModel(client: self.mockClient)
             let songs = [TestFixtures.makeSong(id: "boundary-reconciliation")]
             self.mockClient.shouldWaitForLibraryContentResponse = true
 

@@ -20,7 +20,7 @@ extension LibraryMutationSerialTests {
 
         init() {
             self.mockClient = MockYTMusicClient()
-            self.libraryViewModel = LibraryViewModel(client: self.mockClient)
+            self.libraryViewModel = TestFixtures.makeLibraryViewModel(client: self.mockClient)
             APICache.shared.invalidateAll()
             URLCache.shared.removeAllCachedResponses()
             LibraryMutationActions.artistReconciliationRetryDelays = [.milliseconds(1), .milliseconds(1)]
@@ -314,7 +314,7 @@ extension LibraryMutationSerialTests {
         @Test("Failed playlist deletion restores every library model that observed the optimistic removal")
         func deletePlaylistRestoresAllAffectedLibraryModels() async {
             let playlist = TestFixtures.makePlaylist(id: "VL-delete-multi-window", title: "Shared Playlist")
-            let otherLibraryViewModel = LibraryViewModel(client: self.mockClient)
+            let otherLibraryViewModel = TestFixtures.makeLibraryViewModel(client: self.mockClient)
             self.libraryViewModel.addToLibrary(playlist: playlist)
             otherLibraryViewModel.addToLibrary(playlist: playlist)
             self.mockClient.shouldThrowError = URLError(.notConnectedToInternet)

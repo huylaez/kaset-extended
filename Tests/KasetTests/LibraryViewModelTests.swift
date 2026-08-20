@@ -14,7 +14,7 @@ struct LibraryViewModelTests {
 
     init() {
         self.mockClient = MockYTMusicClient()
-        self.viewModel = LibraryViewModel(
+        self.viewModel = TestFixtures.makeLibraryViewModel(
             client: self.mockClient,
             registerForLibraryMutations: false
         )
@@ -787,7 +787,7 @@ struct LibraryViewModelEnvironmentTests {
         var environment = EnvironmentValues()
         #expect(environment.libraryViewModel == nil)
 
-        let viewModel = LibraryViewModel(
+        let viewModel = TestFixtures.makeLibraryViewModel(
             client: MockYTMusicClient(),
             registerForLibraryMutations: false
         )

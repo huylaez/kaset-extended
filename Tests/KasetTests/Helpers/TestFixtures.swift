@@ -3,6 +3,18 @@ import Foundation
 
 /// Provides test fixtures for unit tests.
 enum TestFixtures {
+    @MainActor
+    static func makeLibraryViewModel(
+        client: any YTMusicClientProtocol,
+        registerForLibraryMutations: Bool = true
+    ) -> LibraryViewModel {
+        LibraryViewModel(
+            client: client,
+            registerForLibraryMutations: registerForLibraryMutations,
+            localPlaylistStore: LocalPlaylistStore(inMemory: ())
+        )
+    }
+
     // MARK: - Songs
 
     static func makeSong(

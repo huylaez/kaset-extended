@@ -468,7 +468,7 @@ extension LibraryMutationSerialTests.LibraryMutationActionsTests {
     @Test("Playlist mutations serialize across different library models")
     func playlistMutationsSerializeAcrossLibraryModels() async throws {
         let playlist = TestFixtures.makePlaylist(id: "VL-multi-model-overlap", title: "Shared Playlist")
-        let otherLibraryViewModel = LibraryViewModel(client: self.mockClient)
+        let otherLibraryViewModel = TestFixtures.makeLibraryViewModel(client: self.mockClient)
         self.mockClient.shouldAutoUpdatePlaylistLibraryOnMutation = false
         self.mockClient.libraryContentResponses = [
             PlaylistParser.LibraryContent(playlists: [], artists: [], podcastShows: []),
@@ -505,7 +505,7 @@ extension LibraryMutationSerialTests.LibraryMutationActionsTests {
     @Test("Playlist additions update every active library model")
     func playlistAdditionsUpdateEveryActiveLibraryModel() async throws {
         let playlist = TestFixtures.makePlaylist(id: "VL-multi-model-add", title: "Shared Addition")
-        let otherLibraryViewModel = LibraryViewModel(client: self.mockClient)
+        let otherLibraryViewModel = TestFixtures.makeLibraryViewModel(client: self.mockClient)
         self.mockClient.shouldAutoUpdatePlaylistLibraryOnMutation = false
 
         try await LibraryMutationActions.addPlaylistToLibrary(
@@ -691,8 +691,8 @@ extension LibraryMutationSerialTests.LibraryMutationActionsTests {
     func ownerCancellationPreservesSharedPlaylistSerializationTail() async throws {
         let playlist = TestFixtures.makePlaylist(id: "VL-owner-tail", title: "Owner Tail")
         let firstLibraryViewModel = self.libraryViewModel
-        let cancelledLibraryViewModel = LibraryViewModel(client: self.mockClient)
-        let latestLibraryViewModel = LibraryViewModel(client: self.mockClient)
+        let cancelledLibraryViewModel = TestFixtures.makeLibraryViewModel(client: self.mockClient)
+        let latestLibraryViewModel = TestFixtures.makeLibraryViewModel(client: self.mockClient)
         let requestStarted = AsyncGate()
         let releaseRequest = AsyncGate()
         self.mockClient.beforeSubscribeToPlaylistReturn = { _ in

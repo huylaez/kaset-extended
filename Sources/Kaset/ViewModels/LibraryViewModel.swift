@@ -299,10 +299,15 @@ final class LibraryViewModel {
     /// The API client (exposed for navigation to detail views).
     let client: any YTMusicClientProtocol
     private let logger = DiagnosticsLogger.api
-    private let localPlaylistStore = LocalPlaylistStore.shared
+    private let localPlaylistStore: LocalPlaylistStore
 
-    init(client: any YTMusicClientProtocol, registerForLibraryMutations: Bool = true) {
+    init(
+        client: any YTMusicClientProtocol,
+        registerForLibraryMutations: Bool = true,
+        localPlaylistStore: LocalPlaylistStore = .shared
+    ) {
         self.client = client
+        self.localPlaylistStore = localPlaylistStore
 
         if registerForLibraryMutations {
             LibraryMutationBroadcaster.shared.register(self)

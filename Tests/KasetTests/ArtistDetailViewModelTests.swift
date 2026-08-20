@@ -13,7 +13,7 @@ extension LibraryMutationSerialTests {
 
         init() {
             self.mockClient = MockYTMusicClient()
-            self.libraryViewModel = LibraryViewModel(client: self.mockClient)
+            self.libraryViewModel = TestFixtures.makeLibraryViewModel(client: self.mockClient)
             let artist = TestFixtures.makeArtist(id: "UC-test-artist", name: "Test Artist")
             self.viewModel = ArtistDetailViewModel(
                 artist: artist,

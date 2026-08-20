@@ -22,7 +22,7 @@ extension LibraryMutationSerialTests {
 
         init() {
             self.mockClient = MockYTMusicClient()
-            self.libraryViewModel = LibraryViewModel(client: self.mockClient)
+            self.libraryViewModel = TestFixtures.makeLibraryViewModel(client: self.mockClient)
             APICache.shared.invalidateAll()
             URLCache.shared.removeAllCachedResponses()
             SongActionsHelper.artistLibraryReconciliationRetryDelays = [.milliseconds(1), .milliseconds(1)]
