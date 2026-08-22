@@ -47,6 +47,7 @@ struct KasetApp: App {
     @State private var playerService = PlayerService()
     @State private var youtubePlayerService: YouTubePlayerService
     @State private var playbackArbiter: PlaybackArbiter
+    @State private var systemSleepPreventer = SystemSleepPreventer()
     @State private var sharedClient: any YTMusicClientProtocol
     @State private var sharedYouTubeClient: any YouTubeClientProtocol
     @State private var notificationService: NotificationService?
@@ -264,6 +265,7 @@ struct KasetApp: App {
                     self.appDelegate.beginOpenURLDelivery()
                     // Reference notificationService to keep SwiftUI from deallocating it
                     _ = self.notificationService
+                    self.reconcileSystemSleepPrevention()
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .kasetOpenURLs)) { notification in
                     guard let urls = notification.object as? [URL] else { return }
@@ -308,6 +310,13 @@ struct KasetApp: App {
                         // One audio source at a time: music starting pauses video.
                         self.playbackArbiter.musicDidStartPlaying()
                     }
+                    self.reconcileSystemSleepPrevention()
+                }
+                .onChange(of: self.youtubePlayerService.isPlaying) { _, _ in
+                    self.reconcileSystemSleepPrevention()
+                }
+                .onChange(of: self.settings.preventSystemSleepWhilePlaying) { _, _ in
+                    self.reconcileSystemSleepPrevention()
                 }
                 .onChange(of: self.youtubePlayerService.surfaceLocation) { _, location in
                     self.handleYouTubeSurfaceLocationChange(location)
@@ -574,6 +583,14 @@ struct KasetApp: App {
         } else {
             YouTubeVideoWindowController.shared.close()
         }
+    }
+
+    private func reconcileSystemSleepPrevention() {
+        self.systemSleepPreventer.reconcile(
+            isEnabled: self.settings.preventSystemSleepWhilePlaying,
+            isMusicPlaying: self.playerService.isPlaying,
+            isVideoPlaying: self.youtubePlayerService.isPlaying
+        )
     }
 
     private func handleMiniPlayerVisibilityChange(_ isVisible: Bool) {

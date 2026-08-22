@@ -57426,6 +57426,46 @@
           }
         }
       }
+    },
+    "Prevent system sleep while playing": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "id": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "pt": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "sv": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "uk": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "Prevent system sleep while playing" } }
+      }
+    },
+    "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings.": {
+      "localizations": {
+        "ar": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "de": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "id": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "ko": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "pt": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "sv": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "uk": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } },
+        "zh-Hant": { "stringUnit": { "state": "translated", "value": "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." } }
+      }
     }
   },
   "version": "1.1"

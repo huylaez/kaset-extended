@@ -14,6 +14,7 @@ final class SettingsManager {
     enum Keys {
         static let appSource = "settings.appSource"
         static let appAppearance = "settings.appAppearance"
+        static let preventSystemSleepWhilePlaying = "settings.preventSystemSleepWhilePlaying"
         static let showNowPlayingNotifications = "settings.showNowPlayingNotifications"
         static let defaultLaunchPage = "settings.defaultLaunchPage"
         static let hapticFeedbackEnabled = "settings.hapticFeedbackEnabled"
@@ -288,6 +289,13 @@ final class SettingsManager {
         }
     }
 
+    /// Whether Kaset prevents idle system sleep while music or video is playing.
+    var preventSystemSleepWhilePlaying: Bool {
+        didSet {
+            Self.storePreventSystemSleepWhilePlaying(self.preventSystemSleepWhilePlaying, in: UserDefaults.standard)
+        }
+    }
+
     /// Whether to show system notifications when the track changes.
     var showNowPlayingNotifications: Bool {
         didSet {
@@ -555,6 +563,14 @@ final class SettingsManager {
         return appearance
     }
 
+    static func loadPreventSystemSleepWhilePlaying(from defaults: UserDefaults) -> Bool {
+        defaults.object(forKey: Keys.preventSystemSleepWhilePlaying) as? Bool ?? false
+    }
+
+    static func storePreventSystemSleepWhilePlaying(_ enabled: Bool, in defaults: UserDefaults) {
+        defaults.set(enabled, forKey: Keys.preventSystemSleepWhilePlaying)
+    }
+
     static func loadSkipEndOfTrackAds(from defaults: UserDefaults) -> Bool {
         defaults.object(forKey: Keys.skipEndOfTrackAds) as? Bool ?? false
     }
@@ -577,6 +593,7 @@ final class SettingsManager {
         self.hapticFeedbackEnabled = UserDefaults.standard.object(forKey: Keys.hapticFeedbackEnabled) as? Bool ?? true
         self.rememberPlaybackSettings = UserDefaults.standard.object(forKey: Keys.rememberPlaybackSettings) as? Bool ?? false
         self.appAppearance = Self.loadAppAppearance(from: UserDefaults.standard)
+        self.preventSystemSleepWhilePlaying = Self.loadPreventSystemSleepWhilePlaying(from: UserDefaults.standard)
 
         // Load per-service enabled flags, migrating from legacy lastFMEnabled if needed
         if let stored = UserDefaults.standard.dictionary(forKey: Keys.enabledServices) as? [String: Bool] {

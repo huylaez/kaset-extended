@@ -83,6 +83,29 @@ struct SettingsManagerTests {
         #expect(SettingsManager.loadAppAppearance(from: defaults) == .dark)
     }
 
+    @Test("Prevent system sleep while playing defaults to disabled")
+    func preventSystemSleepWhilePlayingDefaultsToDisabled() throws {
+        let suiteName = "SettingsManagerTests.preventSystemSleep.missing.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.removePersistentDomain(forName: suiteName)
+
+        #expect(!SettingsManager.loadPreventSystemSleepWhilePlaying(from: defaults))
+    }
+
+    @Test("Prevent system sleep while playing persists in an isolated defaults domain")
+    func preventSystemSleepWhilePlayingPersistsInIsolatedDomain() throws {
+        let suiteName = "SettingsManagerTests.preventSystemSleep.persist.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.removePersistentDomain(forName: suiteName)
+
+        SettingsManager.storePreventSystemSleepWhilePlaying(true, in: defaults)
+        #expect(SettingsManager.loadPreventSystemSleepWhilePlaying(from: defaults))
+        SettingsManager.storePreventSystemSleepWhilePlaying(false, in: defaults)
+        #expect(!SettingsManager.loadPreventSystemSleepWhilePlaying(from: defaults))
+    }
+
     @Test("Default showNowPlayingNotifications is true")
     func defaultShowNowPlayingNotifications() {
         // Access the shared instance to check its default

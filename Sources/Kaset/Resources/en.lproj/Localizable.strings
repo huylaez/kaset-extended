@@ -48,3 +48,7 @@
 "Appearance" = "Appearance";
 "Light" = "Light";
 "Dark" = "Dark";
+
+// System sleep prevention
+"Prevent system sleep while playing" = "Prevent system sleep while playing";
+"Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings." = "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings.";
