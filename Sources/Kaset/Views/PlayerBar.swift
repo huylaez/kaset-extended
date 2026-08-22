@@ -699,6 +699,7 @@ struct PlayerBar: View { // swiftlint:disable:this type_body_length
 
     private var playbackOptionsSection: some View {
         HStack(spacing: 6) {
+            SleepTimerControl(accessibilityID: AccessibilityID.PlayerBar.sleepTimerButton)
             self.lyricsButton
             self.queueButton
             self.pictureButton
@@ -1289,7 +1290,8 @@ struct PlayerBar: View { // swiftlint:disable:this type_body_length
 
 #Preview {
     PlayerBar()
-        .environment(PlayerService())
+    .environment(PlayerService())
+    .environment(SleepTimerService(onExpire: {}))
         .environment(AuthService())
         .environment(FavoritesManager.shared)
         .environment(SongLikeStatusManager.shared)

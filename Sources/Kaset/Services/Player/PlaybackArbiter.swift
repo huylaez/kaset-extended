@@ -60,4 +60,15 @@ final class PlaybackArbiter {
     var routesMediaKeysToVideo: Bool {
         self.activeSource == .video && self.youtubePlayerService.currentVideo != nil
     }
+
+    /// Pauses the source that owns active playback without changing routing.
+    func pauseActivePlayback() async {
+        if self.routesMediaKeysToVideo, self.youtubePlayerService.isPlaying {
+            self.youtubePlayerService.pause()
+        } else if self.playerService.isPlaying {
+            await self.playerService.pause()
+        } else if self.youtubePlayerService.isPlaying {
+            self.youtubePlayerService.pause()
+        }
+    }
 }

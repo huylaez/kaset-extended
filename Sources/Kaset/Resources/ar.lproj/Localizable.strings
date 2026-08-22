@@ -1,5 +1,18 @@
 // Localizable.strings
 
+// Sleep timer
+"Sleep Timer" = "Sleep Timer";
+"15 Minutes" = "15 Minutes";
+"30 Minutes" = "30 Minutes";
+"45 Minutes" = "45 Minutes";
+"1 Hour" = "1 Hour";
+"Custom…" = "Custom…";
+"Turn Off Timer" = "Turn Off Timer";
+"Stops in %lld min" = "Stops in %lld min";
+"Custom Sleep Timer" = "Custom Sleep Timer";
+"Minutes" = "Minutes";
+"Start Timer" = "Start Timer";
+
 // Track-boundary advertisement experiments
 "Experimental" = "تجريبي";
 "Skip end-of-track ads" = "تخطي الإعلانات في نهاية المقطع";

@@ -18,7 +18,7 @@ struct YouTubePlayerBar: View {
     private static let brandAccent = PackageResourceLookup.brandAccent
     private static let fullVideoDetailsWidth: CGFloat = 294
     private static let compactVideoDetailsWidth: CGFloat = 141
-    private static let baseYouTubeOptionsWidth: CGFloat = 210
+    private static let baseYouTubeOptionsWidth: CGFloat = 244
     private static let floatOnTopOptionsWidthIncrement: CGFloat = 28 + 6
 
     /// Below this the details block would collide with the transport controls.
@@ -33,6 +33,7 @@ struct YouTubePlayerBar: View {
 
     @Environment(AuthService.self) private var authService
     @Environment(YouTubePlayerService.self) private var youtubePlayer
+    @Environment(SleepTimerService.self) private var sleepTimer
     @Environment(YouTubeViewModelStore.self) private var youtubeStore: YouTubeViewModelStore?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.colorScheme) private var colorScheme
@@ -330,6 +331,7 @@ struct YouTubePlayerBar: View {
 
     private var youtubeTransportControls: some View {
         HStack(spacing: 6) {
+            SleepTimerControl(accessibilityID: AccessibilityID.YouTubeContent.sleepTimerButton)
             PlayerBarIconButton(
                 action: {
                     HapticService.playback()
@@ -886,6 +888,7 @@ extension View {
 // MARK: - AccessibilityID Additions
 
 extension AccessibilityID.YouTubeContent {
+    static let sleepTimerButton = "youtubeContent.sleepTimer"
     static let watchPlayPause = "youtubeContent.watchPlayPause"
     static let watchLikeButton = "youtubeContent.watchLikeButton"
     static let watchDislikeButton = "youtubeContent.watchDislikeButton"

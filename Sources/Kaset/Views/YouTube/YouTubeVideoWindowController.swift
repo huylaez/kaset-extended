@@ -100,7 +100,11 @@ final class YouTubeVideoWindowController {
     private init() {}
 
     /// Shows the floating window hosting the video surface.
-    func show(youtubePlayerService: YouTubePlayerService, authService: AuthService) {
+    func show(
+        youtubePlayerService: YouTubePlayerService,
+        authService: AuthService,
+        sleepTimerService: SleepTimerService
+    ) {
         self.youtubePlayerService = youtubePlayerService
 
         if let existingWindow = self.window {
@@ -114,6 +118,7 @@ final class YouTubeVideoWindowController {
         let contentView = YouTubeVideoWindowContent()
             .environment(youtubePlayerService)
             .environment(authService)
+            .environment(sleepTimerService)
 
         let hostingView = NSHostingView(rootView: AnyView(contentView))
         self.hostingView = hostingView
