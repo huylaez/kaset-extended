@@ -96,10 +96,19 @@ private struct SleepTimerCustomDurationSheet: View {
             Text("Custom Sleep Timer")
                 .font(.headline)
 
-            TextField("Minutes", text: self.$minutesText)
-                .textFieldStyle(.roundedBorder)
-                .frame(width: 130)
-                .accessibilityLabel(Text("Minutes"))
+            Text("Enter a whole number of minutes from 1 to 720.")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 8) {
+                TextField("Minutes", text: self.$minutesText)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 130)
+                    .accessibilityLabel(Text("Minutes"))
+
+                Text("minutes")
+                    .foregroundStyle(.secondary)
+            }
 
             HStack {
                 Spacer()
