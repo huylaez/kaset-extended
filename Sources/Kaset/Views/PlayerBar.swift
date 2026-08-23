@@ -61,7 +61,8 @@ struct PlayerBar: View { // swiftlint:disable:this type_body_length
                         .frame(height: 52)
 
                     self.playbackOptionsSection
-                        .frame(width: 142, height: 52)
+                        .layoutPriority(1)
+                        .frame(height: 52)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -706,7 +707,6 @@ struct PlayerBar: View { // swiftlint:disable:this type_body_length
             self.miniPlayerButton
         }
         .padding(.trailing, 12)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
     }
 
     private var lyricsButton: some View {
