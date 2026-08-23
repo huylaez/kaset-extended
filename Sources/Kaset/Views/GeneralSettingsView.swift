@@ -47,6 +47,25 @@ struct GeneralSettingsView: View {
                     }
                 }
 
+                VStack(alignment: .leading, spacing: 4) {
+                    Toggle(
+                        String(localized: "Prevent system sleep while playing"),
+                        isOn: self.$settings.preventSystemSleepWhilePlaying
+                    )
+                    Text(
+                        String(
+                            localized: "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings."
+                        )
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+                .help(
+                    String(
+                        localized: "Keep your Mac awake while Kaset is playing music or video. Your display can still turn off according to macOS settings."
+                    )
+                )
+
                 // Haptic Feedback
                 Toggle("Haptic Feedback", isOn: self.$settings.hapticFeedbackEnabled)
                     .help(String(localized: "Provide tactile feedback for actions on Force Touch trackpads"))

@@ -68,3 +68,4 @@ What becomes easier or more difficult because of this change?
 | [0031](0031-saved-album-library-reconciliation.md) | Saved-Album Library Identity and Reconciliation | Accepted |
 | [0032](0032-youtube-ask-gemini.md) | Watch-Scoped YouTube Ask Gemini | Accepted; fixed WEB profile enabled in production |
 | [0033](0033-local-library-playlists.md) | Local Guest Library Playlists | Accepted |
+| [0034](0034-playback-system-sleep-prevention.md) | Playback System Sleep Prevention | Accepted |
