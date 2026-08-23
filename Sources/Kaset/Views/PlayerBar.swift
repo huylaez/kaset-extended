@@ -61,7 +61,8 @@ struct PlayerBar: View { // swiftlint:disable:this type_body_length
                         .frame(height: 52)
 
                     self.playbackOptionsSection
-                        .frame(width: 142, height: 52)
+                        .layoutPriority(1)
+                        .frame(height: 52)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -699,13 +700,13 @@ struct PlayerBar: View { // swiftlint:disable:this type_body_length
 
     private var playbackOptionsSection: some View {
         HStack(spacing: 6) {
+            SleepTimerControl(accessibilityID: AccessibilityID.PlayerBar.sleepTimerButton)
             self.lyricsButton
             self.queueButton
             self.pictureButton
             self.miniPlayerButton
         }
         .padding(.trailing, 12)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
     }
 
     private var lyricsButton: some View {
@@ -1289,7 +1290,8 @@ struct PlayerBar: View { // swiftlint:disable:this type_body_length
 
 #Preview {
     PlayerBar()
-        .environment(PlayerService())
+    .environment(PlayerService())
+    .environment(SleepTimerService(onExpire: {}))
         .environment(AuthService())
         .environment(FavoritesManager.shared)
         .environment(SongLikeStatusManager.shared)

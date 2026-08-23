@@ -2034,4 +2034,72 @@ struct PlaybackArbiterTests {
         #expect(playerService.queue.isEmpty)
         #expect(playerService.currentTrack == nil)
     }
+
+    @Test("Sleep timer pauses routed video only")
+    func pauseActivePlaybackPausesRoutedVideo() async {
+        let playerService = PlayerService()
+        let controller = MockYouTubeWatchPlaybackController()
+        let youtubePlayer = YouTubePlayerService(playbackController: controller)
+        let arbiter = PlaybackArbiter(playerService: playerService, youtubePlayerService: youtubePlayer)
+
+        youtubePlayer.play(video: MockYouTubeClient.makeVideo(videoId: "abc"))
+        youtubePlayer.updatePlaybackState(.init(
+            isPlaying: true, progress: 0, duration: 10,
+            videoId: "abc", title: nil, isAd: false
+        ))
+        await arbiter.pauseActivePlayback()
+
+        #expect(controller.pauseCount == 1)
+        #expect(playerService.state == .idle)
+    }
+
+    @Test("Sleep timer pauses playing music only")
+    func pauseActivePlaybackPausesMusic() async {
+        let playerService = PlayerService()
+        let controller = MockYouTubeWatchPlaybackController()
+        let youtubePlayer = YouTubePlayerService(playbackController: controller)
+        let arbiter = PlaybackArbiter(playerService: playerService, youtubePlayerService: youtubePlayer)
+        playerService.state = .playing
+
+        await arbiter.pauseActivePlayback()
+
+        #expect(playerService.state == .paused)
+        #expect(controller.pauseCount == 0)
+    }
+
+    @Test("Sleep timer falls back to a playing video during routing mismatch")
+    func pauseActivePlaybackFallsBackToVideo() async {
+        let playerService = PlayerService()
+        let controller = MockYouTubeWatchPlaybackController()
+        let youtubePlayer = YouTubePlayerService(playbackController: controller)
+        let arbiter = PlaybackArbiter(playerService: playerService, youtubePlayerService: youtubePlayer)
+
+        youtubePlayer.play(video: MockYouTubeClient.makeVideo(videoId: "abc"))
+        youtubePlayer.updatePlaybackState(.init(
+            isPlaying: true, progress: 0, duration: 10,
+            videoId: "abc", title: nil, isAd: false
+        ))
+        arbiter.musicDidStartPlaying()
+        youtubePlayer.updatePlaybackState(.init(
+            isPlaying: true, progress: 0, duration: 10,
+            videoId: "abc", title: nil, isAd: false
+        ))
+
+        await arbiter.pauseActivePlayback()
+
+        #expect(controller.pauseCount == 2)
+    }
+
+    @Test("Sleep timer does nothing when no source is playing")
+    func pauseActivePlaybackDoesNothingWhenInactive() async {
+        let playerService = PlayerService()
+        let controller = MockYouTubeWatchPlaybackController()
+        let youtubePlayer = YouTubePlayerService(playbackController: controller)
+        let arbiter = PlaybackArbiter(playerService: playerService, youtubePlayerService: youtubePlayer)
+
+        await arbiter.pauseActivePlayback()
+
+        #expect(playerService.state == .idle)
+        #expect(controller.pauseCount == 0)
+    }
 }

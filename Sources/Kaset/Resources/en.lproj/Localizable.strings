@@ -1,4 +1,19 @@
 // Track-boundary advertisement experiments
+// Sleep timer
+"Enter a whole number of minutes from 1 to 720." = "Enter a whole number of minutes from 1 to 720.";
+"minutes" = "minutes";
+"Sleep Timer" = "Sleep Timer";
+"15 Minutes" = "15 Minutes";
+"30 Minutes" = "30 Minutes";
+"45 Minutes" = "45 Minutes";
+"1 Hour" = "1 Hour";
+"Custom…" = "Custom…";
+"Turn Off Timer" = "Turn Off Timer";
+"Stops in %lld min" = "Stops in %lld min";
+"Custom Sleep Timer" = "Custom Sleep Timer";
+"Minutes" = "Minutes";
+"Start Timer" = "Start Timer";
+
 "Experimental" = "Experimental";
 "Skip end-of-track ads" = "Skip end-of-track ads";
 "When an ad starts after the current song has reached its end, Kaset automatically advances to the next song instead of playing the ad." = "When an ad starts after the current song has reached its end, Kaset automatically advances to the next song instead of playing the ad.";
