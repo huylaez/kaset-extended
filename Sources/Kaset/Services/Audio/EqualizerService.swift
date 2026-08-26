@@ -262,6 +262,22 @@ final class EqualizerService {
         }
     }
 
+    /// Keeps the equalizer engine aligned with music playback. The engine
+    /// must not remain active while playback is paused, because the process
+    /// tap otherwise continues to own the output path while rendering only
+    /// silence.
+    func handlePlaybackStateChange(isPlaying: Bool) {
+        if isPlaying {
+            self.retryStartIfEnabled()
+            return
+        }
+
+        guard self.settings.isEnabled else { return }
+        self.retryTask?.cancel()
+        self.verificationTask?.cancel()
+        self.engine.stop()
+    }
+
     // MARK: - Status
 
     /// Computed status used by the UI badge.
@@ -357,6 +373,12 @@ final class EqualizerService {
             }
         }
         self.shouldRequestCapturePermissionOnNextStart = false
+
+        guard self.isPlaybackActive() else {
+            self.logger.info("music playback is inactive — keeping equalizer in standby")
+            self.engine.stop()
+            return
+        }
 
         switch self.engine.start() {
         case .success:

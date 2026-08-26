@@ -30,7 +30,7 @@ struct EqualizerServiceTests {
     /// defaults domain.
     private static func makeService(
         startResult: Result<Void, EqualizerAudioEngine.StartFailure> = .success(()),
-        isPlaybackActive: @escaping @MainActor () -> Bool = { false },
+        isPlaybackActive: @escaping @MainActor () -> Bool = { true },
         playbackProgress: @escaping @MainActor () -> TimeInterval = { 0 },
         hasCapturePermission: @escaping @MainActor () -> Bool = { true },
         requestCapturePermission: @escaping @MainActor () -> Bool = { true }
@@ -296,14 +296,30 @@ struct EqualizerServiceTests {
 
     @Test("No-audio-source failure stays silent (waiting for playback)")
     func noAudioSourceShowsStandby() {
-        let harness = Self.makeService(startResult: .failure(.tap(.noAudioSource)))
+        let harness = Self.makeService(
+            startResult: .failure(.tap(.noAudioSource)),
+            isPlaybackActive: { false }
+        )
         let service = harness.service
         let mock = harness.mock
         service.setEnabled(true)
 
-        #expect(mock.startCallCount == 1)
+        #expect(mock.startCallCount == 0)
         #expect(service.settings.isEnabled == true)
         #expect(service.lastFailure == nil)
+        #expect(service.status == .standby)
+    }
+
+    @Test("Enabling the EQ while playback is paused stays in standby")
+    func enablingWhilePausedStaysInStandby() {
+        let harness = Self.makeService(isPlaybackActive: { false })
+        let service = harness.service
+        let mock = harness.mock
+
+        service.setEnabled(true)
+
+        #expect(mock.startCallCount == 0)
+        #expect(service.settings.isEnabled == true)
         #expect(service.status == .standby)
     }
 
@@ -337,6 +353,38 @@ struct EqualizerServiceTests {
         #expect(didStart)
         #expect(mock.startCallCount > firstAttempt)
         #expect(service.status == .active)
+    }
+
+    @Test("Pausing playback stops the engine and returns to standby")
+    func pauseStopsEngineAndReturnsToStandby() {
+        let harness = Self.makeService()
+        let service = harness.service
+        let mock = harness.mock
+        service.setEnabled(true)
+        #expect(service.status == .active)
+
+        service.handlePlaybackStateChange(isPlaying: false)
+
+        #expect(mock.stopCallCount >= 1)
+        #expect(service.settings.isEnabled == true)
+        #expect(service.status == .standby)
+    }
+
+    @Test("Pausing playback cancels a pending engine retry")
+    func pauseCancelsPendingRetry() async {
+        let harness = Self.makeService(startResult: .failure(.tap(.noAudioSource)))
+        let service = harness.service
+        let mock = harness.mock
+        service.setEnabled(true)
+        let baselineStartCount = mock.startCallCount
+
+        mock.startResult = .success(())
+        service.handlePlaybackStateChange(isPlaying: true)
+        service.handlePlaybackStateChange(isPlaying: false)
+        try? await Task.sleep(for: .milliseconds(700))
+
+        #expect(mock.startCallCount == baselineStartCount)
+        #expect(service.status == .standby)
     }
 
     @Test("Disabling stops the engine and clears the error")
