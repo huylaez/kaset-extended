@@ -1,5 +1,4 @@
 import CoreAudio
-import CoreGraphics
 import Foundation
 import Observation
 
@@ -99,11 +98,6 @@ final class EqualizerService {
     /// indicative of a permission problem.
     private let playbackProgress: @MainActor () -> TimeInterval
 
-    /// Screen / system-audio recording TCC helpers are injected for tests so
-    /// the permission flow can be exercised without touching macOS privacy APIs.
-    private let hasCapturePermission: @MainActor () -> Bool
-    private let requestCapturePermission: @MainActor () -> Bool
-
     private let logger = DiagnosticsLogger.equalizer
 
     /// Reused across persist/load to avoid allocating a fresh coder on
@@ -114,11 +108,6 @@ final class EqualizerService {
     private static let persistDebounceInterval: Duration = .milliseconds(250)
     private static let tapVerificationPollInterval: Duration = .seconds(2)
     private static let tapVerificationProgressThreshold: TimeInterval = 8
-
-    /// Set when the user explicitly turns the EQ on so the next start attempt
-    /// may trigger the system permission prompt. Automatic retries consume
-    /// this flag rather than reopening System Settings over and over.
-    private var shouldRequestCapturePermissionOnNextStart: Bool = false
 
     // MARK: - Init
 
@@ -131,15 +120,11 @@ final class EqualizerService {
         engine: any EqualizerAudioEngineProtocol = EqualizerAudioEngine(),
         isPlaybackActive: @escaping @MainActor () -> Bool = { PlayerService.shared?.isPlaying ?? false },
         playbackProgress: @escaping @MainActor () -> TimeInterval = { PlayerService.shared?.progress ?? 0 },
-        hasCapturePermission: @escaping @MainActor () -> Bool = { CGPreflightScreenCaptureAccess() },
-        requestCapturePermission: @escaping @MainActor () -> Bool = { CGRequestScreenCaptureAccess() },
         defaults: UserDefaults = .standard
     ) {
         self.engine = engine
         self.isPlaybackActive = isPlaybackActive
         self.playbackProgress = playbackProgress
-        self.hasCapturePermission = hasCapturePermission
-        self.requestCapturePermission = requestCapturePermission
         self.defaults = defaults
         self.settings = Self.loadPersistedSettings(from: defaults)
         self.syncEngine()
@@ -229,10 +214,7 @@ final class EqualizerService {
     /// Enables or disables the equalizer.
     func setEnabled(_ enabled: Bool) {
         // A direct user toggle resets any inferred permission warning.
-        // If permission is still missing, the next start attempt will
-        // immediately infer it again.
         self.inferredPermissionDenial = false
-        self.shouldRequestCapturePermissionOnNextStart = enabled
         var next = self.settings
         next.isEnabled = enabled
         self.settings = next
@@ -357,23 +339,6 @@ final class EqualizerService {
     /// is happening it strongly implies the sandbox is silently blocking
     /// our process-list scan due to missing audio-capture permission.
     private func attemptStart(playbackKnownActive: Bool) {
-        if !self.hasCapturePermission() {
-            if self.shouldRequestCapturePermissionOnNextStart {
-                self.shouldRequestCapturePermissionOnNextStart = false
-                _ = self.requestCapturePermission()
-                guard self.hasCapturePermission() else {
-                    self.logger.warning("capture permission request did not grant access yet")
-                    self.flagPermissionDenial()
-                    return
-                }
-            } else {
-                self.logger.warning("capture permission missing — awaiting explicit user retry")
-                self.flagPermissionDenial()
-                return
-            }
-        }
-        self.shouldRequestCapturePermissionOnNextStart = false
-
         guard self.isPlaybackActive() else {
             self.logger.info("music playback is inactive — keeping equalizer in standby")
             self.engine.stop()

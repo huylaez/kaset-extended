@@ -64,10 +64,15 @@ An earlier revision of this feature used a single duplex `AUHAL` (`kAudioUnitSub
 - `Kaset.entitlements`: `com.apple.security.device.audio-input` (sandbox capability for audio capture in the presence of `app-sandbox`).
 - macOS 14.2+ runtime check inside `ProcessTapHelper.start()`.
 
+The implementation must not use `CGPreflightScreenCaptureAccess()` or
+`CGRequestScreenCaptureAccess()` for this flow. Those APIs check screen-capture
+consent, while Core Audio taps use system-audio recording consent; macOS
+requests the correct permission when the aggregate device starts.
+
 ## Consequences
 
 - New code lives under `Sources/Kaset/Models/` (`EQSettings`, `EQBand`, `EQPreset`), `Sources/Kaset/Services/Audio/` (`EqualizerService`, `EqualizerAudioEngine`, `ProcessTapHelper`, `BiquadFilter`), and `Sources/Kaset/Views/EqualizerSettingsView.swift`.
-- **Permission UX is intent-preserving.** `EQSettings.isEnabled` is the user's intent and persists across launches. The actual engine state is shown separately via the status row (Active / Waiting for playback / Permission needed / Engine error). When TCC permission for *Screen & System Audio Recording* is missing the toggle auto-disables and the status row offers a deep-link to the right System Settings pane; otherwise a transient launch-time tap failure (no playback yet) leaves the toggle on so the engine spins up automatically when playback starts.
+- **Permission UX is intent-preserving.** `EQSettings.isEnabled` is the user's intent and persists across launches. The actual engine state is shown separately via the status row (Active / Waiting for playback / Permission needed / Engine error). When TCC permission for *Screen & System Audio Recording* is missing, the toggle remains on and the status row offers a deep-link to the right System Settings pane; a transient launch-time tap failure (no playback yet) leaves the toggle on so the engine spins up automatically when playback starts.
 - **No additional latency** in the audio path — the HAL I/O proc delivers input and output in the same callback.
 - **Other macOS apps' audio is unaffected** — the tap targets only Kaset's WebKit subprocess.
 - **WebKit subprocess restarts** invalidate the tap. The user must toggle the EQ off and on to refresh; we don't currently observe XPC lifecycle to do this automatically.

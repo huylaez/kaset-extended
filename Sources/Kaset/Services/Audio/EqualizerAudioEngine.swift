@@ -468,7 +468,7 @@ final class EqualizerAudioEngine: EqualizerAudioEngineProtocol {
         /// Whether the failure points to the audio-capture TCC permission.
         var isPermissionLikely: Bool {
             switch self {
-            case .tap(.tapCreation), .tap(.permissionDenied):
+            case .tap(.tapCreation):
                 true
             default:
                 false
@@ -481,8 +481,6 @@ final class EqualizerAudioEngine: EqualizerAudioEngineProtocol {
                 String(localized: "The equalizer activates as soon as you start playback.")
             case let .tap(.tapCreation(status)):
                 String(localized: "Couldn't capture Kaset's audio (status \(status)). Check Screen & System Audio Recording permission in System Settings.")
-            case .tap(.permissionDenied):
-                String(localized: "Open System Settings → Privacy & Security → Screen & System Audio Recording and enable Kaset, then toggle the equalizer on again.")
             case .tap(.aggregateDeviceCreation):
                 String(localized: "Couldn't create the equalizer audio device. Restarting Kaset usually fixes this.")
             case .tap(.unsupportedOS):
