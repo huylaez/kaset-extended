@@ -307,12 +307,11 @@ struct KasetApp: App {
                 // spawn/tear down a second scene around `kaset://`.
                 .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
                 .onChange(of: self.playerService.isPlaying) { _, isPlaying in
-                    // The Core Audio process tap needs WebKit's GPU
-                    // process to be actively emitting audio before it
-                    // can be discovered. When playback starts, give the
-                    // equalizer a chance to spin up.
+                    // Keep the equalizer's Core Audio process tap aligned
+                    // with music playback: start on play and release the
+                    // output path when playback is paused.
+                    self.equalizerService.handlePlaybackStateChange(isPlaying: isPlaying)
                     if isPlaying {
-                        self.equalizerService.retryStartIfEnabled()
                         // One audio source at a time: music starting pauses video.
                         self.playbackArbiter.musicDidStartPlaying()
                     }

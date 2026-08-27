@@ -15,10 +15,6 @@ struct EqualizerServiceTests {
         var progress: TimeInterval = 0
     }
 
-    private final class PermissionProbe: @unchecked Sendable {
-        var granted = false
-    }
-
     private struct TestHarness {
         let service: EqualizerService
         let mock: MockEqualizerAudioEngine
@@ -30,23 +26,20 @@ struct EqualizerServiceTests {
     /// defaults domain.
     private static func makeService(
         startResult: Result<Void, EqualizerAudioEngine.StartFailure> = .success(()),
-        isPlaybackActive: @escaping @MainActor () -> Bool = { false },
+        isPlaybackActive: @escaping @MainActor () -> Bool = { true },
         playbackProgress: @escaping @MainActor () -> TimeInterval = { 0 },
-        hasCapturePermission: @escaping @MainActor () -> Bool = { true },
-        requestCapturePermission: @escaping @MainActor () -> Bool = { true }
+        defaults: UserDefaults? = nil
     ) -> TestHarness {
-        let defaults = UserDefaults(suiteName: self.suiteName)!
-        defaults.removePersistentDomain(forName: self.suiteName)
+        let testDefaults = defaults ?? UserDefaults(suiteName: self.suiteName)!
+        testDefaults.removePersistentDomain(forName: self.suiteName)
         let mock = MockEqualizerAudioEngine(startResult: startResult)
         let service = EqualizerService(
             engine: mock,
             isPlaybackActive: isPlaybackActive,
             playbackProgress: playbackProgress,
-            hasCapturePermission: hasCapturePermission,
-            requestCapturePermission: requestCapturePermission,
-            defaults: defaults
+            defaults: testDefaults
         )
-        return TestHarness(service: service, mock: mock, defaults: defaults)
+        return TestHarness(service: service, mock: mock, defaults: testDefaults)
     }
 
     private func waitUntil(
@@ -181,55 +174,8 @@ struct EqualizerServiceTests {
         }
     }
 
-    @Test("Directly enabling the EQ requests capture permission when it is missing")
-    func enablingRequestsCapturePermission() {
-        let permission = PermissionProbe()
-        var requestCount = 0
-        let harness = Self.makeService(
-            hasCapturePermission: { permission.granted },
-            requestCapturePermission: {
-                requestCount += 1
-                permission.granted = true
-                return true
-            }
-        )
-        let service = harness.service
-        let mock = harness.mock
-
-        service.setEnabled(true)
-
-        #expect(requestCount == 1)
-        #expect(mock.startCallCount == 1)
-        #expect(service.status == .active)
-    }
-
-    @Test("Denied capture permission keeps intent enabled and avoids starting the engine")
-    func deniedCapturePermissionDoesNotStartEngine() {
-        var requestCount = 0
-        let harness = Self.makeService(
-            hasCapturePermission: { false },
-            requestCapturePermission: {
-                requestCount += 1
-                return false
-            }
-        )
-        let service = harness.service
-        let mock = harness.mock
-
-        service.setEnabled(true)
-
-        #expect(requestCount == 1)
-        #expect(mock.startCallCount == 0)
-        #expect(service.settings.isEnabled == true)
-        if case .permissionNeeded = service.status {
-            // expected
-        } else {
-            Issue.record("Expected .permissionNeeded status, got \(service.status)")
-        }
-    }
-
-    @Test("Permission prompt is not auto-requested from persisted enabled state on launch")
-    func launchDoesNotPromptWithoutExplicitUserRetry() throws {
+    @Test("Persisted enabled state stays in standby until playback starts")
+    func persistedEnabledStateStaysInStandbyUntilPlaybackStarts() throws {
         let defaults = try #require(UserDefaults(suiteName: Self.suiteName))
         defaults.removePersistentDomain(forName: Self.suiteName)
         let persisted = EQSettings(
@@ -240,25 +186,16 @@ struct EqualizerServiceTests {
         )
         try defaults.set(JSONEncoder().encode(persisted), forKey: "settings.equalizer")
 
-        var requestCount = 0
         let mock = MockEqualizerAudioEngine()
         let service = EqualizerService(
             engine: mock,
-            hasCapturePermission: { false },
-            requestCapturePermission: {
-                requestCount += 1
-                return true
-            },
+            isPlaybackActive: { false },
             defaults: defaults
         )
 
-        #expect(requestCount == 0)
         #expect(mock.startCallCount == 0)
-        if case .permissionNeeded = service.status {
-            // expected
-        } else {
-            Issue.record("Expected .permissionNeeded status, got \(service.status)")
-        }
+        #expect(service.settings.isEnabled == true)
+        #expect(service.status == .standby)
     }
 
     @Test("retryStartIfEnabled retries automatically after permission is restored")
@@ -296,14 +233,30 @@ struct EqualizerServiceTests {
 
     @Test("No-audio-source failure stays silent (waiting for playback)")
     func noAudioSourceShowsStandby() {
-        let harness = Self.makeService(startResult: .failure(.tap(.noAudioSource)))
+        let harness = Self.makeService(
+            startResult: .failure(.tap(.noAudioSource)),
+            isPlaybackActive: { false }
+        )
         let service = harness.service
         let mock = harness.mock
         service.setEnabled(true)
 
-        #expect(mock.startCallCount == 1)
+        #expect(mock.startCallCount == 0)
         #expect(service.settings.isEnabled == true)
         #expect(service.lastFailure == nil)
+        #expect(service.status == .standby)
+    }
+
+    @Test("Enabling the EQ while playback is paused stays in standby")
+    func enablingWhilePausedStaysInStandby() {
+        let harness = Self.makeService(isPlaybackActive: { false })
+        let service = harness.service
+        let mock = harness.mock
+
+        service.setEnabled(true)
+
+        #expect(mock.startCallCount == 0)
+        #expect(service.settings.isEnabled == true)
         #expect(service.status == .standby)
     }
 
@@ -337,6 +290,38 @@ struct EqualizerServiceTests {
         #expect(didStart)
         #expect(mock.startCallCount > firstAttempt)
         #expect(service.status == .active)
+    }
+
+    @Test("Pausing playback stops the engine and returns to standby")
+    func pauseStopsEngineAndReturnsToStandby() {
+        let harness = Self.makeService()
+        let service = harness.service
+        let mock = harness.mock
+        service.setEnabled(true)
+        #expect(service.status == .active)
+
+        service.handlePlaybackStateChange(isPlaying: false)
+
+        #expect(mock.stopCallCount >= 1)
+        #expect(service.settings.isEnabled == true)
+        #expect(service.status == .standby)
+    }
+
+    @Test("Pausing playback cancels a pending engine retry")
+    func pauseCancelsPendingRetry() async {
+        let harness = Self.makeService(startResult: .failure(.tap(.noAudioSource)))
+        let service = harness.service
+        let mock = harness.mock
+        service.setEnabled(true)
+        let baselineStartCount = mock.startCallCount
+
+        mock.startResult = .success(())
+        service.handlePlaybackStateChange(isPlaying: true)
+        service.handlePlaybackStateChange(isPlaying: false)
+        try? await Task.sleep(for: .milliseconds(700))
+
+        #expect(mock.startCallCount == baselineStartCount)
+        #expect(service.status == .standby)
     }
 
     @Test("Disabling stops the engine and clears the error")

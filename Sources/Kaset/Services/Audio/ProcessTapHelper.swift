@@ -1,6 +1,5 @@
 import ApplicationServices
 import CoreAudio
-import CoreGraphics
 import Darwin
 import Foundation
 
@@ -90,10 +89,6 @@ final class ProcessTapHelper {
         /// `AudioHardwareCreateProcessTap` returned a non-zero status —
         /// usually permission denial or a transient HAL error.
         case tapCreation(OSStatus)
-        /// TCC explicitly reports the audio-capture permission as denied
-        /// or restricted. We bail before creating the tap so we never mute
-        /// WebKit's output without being able to play it back ourselves.
-        case permissionDenied
         /// Aggregate device construction failed. Rare.
         case aggregateDeviceCreation
         /// Pre-flight check failed (running on an unsupported macOS).
@@ -119,24 +114,10 @@ final class ProcessTapHelper {
             return .success(()) // already running
         }
 
-        // Final guard on the *Screen Recording / System Audio Recording*
-        // TCC permission — this is what Core Audio process taps actually
-        // require, despite the dialog text mentioning audio capture.
-        // `EqualizerService` owns the first-use prompt so automatic retries
-        // and device-change rebinds do not keep reopening System Settings.
-        // This preflight still protects us if macOS reports the permission
-        // as unavailable after that request path.
-        //
-        // When permission is missing the tap APIs return `noErr` but feed
-        // us only zeros while still installing the mute on WebKit, which
-        // would silence the player without us noticing. Bailing here keeps
-        // WebKit untouched.
-        if !CGPreflightScreenCaptureAccess() {
-            Self.logger.warning(
-                "screen / system-audio recording permission missing — not creating tap"
-            )
-            return .failure(.permissionDenied)
-        }
+        // Do not use CGPreflightScreenCaptureAccess here. That API checks
+        // screen-capture consent, while Core Audio taps use the separate
+        // system-audio recording consent. AudioDeviceStart below is the
+        // supported point where macOS requests the tap permission.
 
         // Clean up any aggregate devices left behind by a prior crash —
         // Core Audio keeps them until the system reboots otherwise, and
