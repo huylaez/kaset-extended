@@ -29,7 +29,7 @@ struct PreRollAdDecisionInput: Equatable, Sendable {
     let hasCurrentPlaybackIntent: Bool
     let isCurrentDocument: Bool
     let hasAuthoritativeContentProgressed: Bool
-    let retryBudgetConsumed: Bool
+    let retryAttempt: Int
     let isExplicitPauseIntentActive: Bool
 }
 
@@ -41,6 +41,9 @@ enum TrackBoundaryAdPolicy {
     /// The measured pre-roll advertisement began before any positive authoritative content sample.
     /// Any positive accepted sample permanently disqualifies later ads for that playback selection.
     static let contentStartThreshold: TimeInterval = 0
+
+    /// Caps reload attempts so an ad response cannot cause an infinite loop.
+    static let maximumPreRollRetryAttempts = 3
 
     static func shouldCompleteTrack(for input: EndOfTrackAdDecisionInput) -> Bool {
         guard input.isEnabled,
@@ -67,7 +70,7 @@ enum TrackBoundaryAdPolicy {
             && input.hasCurrentPlaybackIntent
             && input.isCurrentDocument
             && !input.hasAuthoritativeContentProgressed
-            && !input.retryBudgetConsumed
+            && input.retryAttempt < Self.maximumPreRollRetryAttempts
             && !input.isExplicitPauseIntentActive
     }
 
@@ -84,7 +87,7 @@ struct TrackBoundaryAdPlaybackOwner: Equatable {
 struct PreRollAdRetryState: Equatable {
     var owner: TrackBoundaryAdPlaybackOwner?
     var hasAuthoritativeContentProgressed = false
-    var retryBudgetConsumed = false
+    var retryAttempt = 0
 }
 
 enum TrackBoundaryAdTransition: Equatable {

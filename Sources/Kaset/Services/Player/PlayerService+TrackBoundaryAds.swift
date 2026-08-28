@@ -37,7 +37,7 @@ extension PlayerService {
         )
         guard TrackBoundaryAdPolicy.hasAuthoritativeContentProgressed(progress) else { return }
         self.preRollAdRetryState.hasAuthoritativeContentProgressed = true
-        self.preRollAdRetryState.retryBudgetConsumed = false
+        self.preRollAdRetryState.retryAttempt = 0
     }
 
     func prepareTrackBoundaryAdTransition(
@@ -90,11 +90,11 @@ extension PlayerService {
             isCurrentDocument: isCurrentDocument,
             hasAuthoritativeContentProgressed: self.preRollAdRetryState
                 .hasAuthoritativeContentProgressed,
-            retryBudgetConsumed: self.preRollAdRetryState.retryBudgetConsumed,
+            retryAttempt: self.preRollAdRetryState.retryAttempt,
             isExplicitPauseIntentActive: self.isExplicitPauseIntentActive
         )
         guard TrackBoundaryAdPolicy.shouldRetryTrack(for: preRollInput) else { return nil }
-        self.preRollAdRetryState.retryBudgetConsumed = true
+        self.preRollAdRetryState.retryAttempt += 1
         return .retryTrack(intent: intent)
     }
 
@@ -108,6 +108,8 @@ extension PlayerService {
                 intent: intent
             )
         case let .retryTrack(intent):
+            // Stop the detected advertisement before the full-page reload is scheduled.
+            SingletonPlayerWebView.shared.pause()
             await self.retryCurrentTrackAfterPreRollAd(intent: intent)
         }
     }
