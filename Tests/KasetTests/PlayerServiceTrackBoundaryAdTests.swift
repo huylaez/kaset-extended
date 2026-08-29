@@ -47,31 +47,36 @@ struct PlayerServiceTrackBoundaryAdTests {
         #expect(transition == nil)
     }
 
-    @Test("Pre-roll retry budget survives replacement media occurrences")
-    func preRollRetryBudgetSurvivesReplacementOccurrences() {
+    @Test("Pre-roll retries survive replacement media occurrences up to the fixed limit")
+    func preRollRetriesSurviveReplacementMediaOccurrencesUpToLimit() {
         let service = Self.makeService(retriesPreRollAds: true, contentProgress: nil)
         let intent = service.currentMusicPlaybackIntent
 
-        let first = service.prepareTrackBoundaryAdTransition(
-            isAdRisingEdge: true,
-            isCurrentDocument: true,
-            contentOccurrence: service.currentMusicPlaybackOccurrence,
-            intent: intent
-        )
-        service.preserveTrackBoundaryAdPlaybackSelection(videoID: "video-a", queueEntryID: service.currentQueueEntryID)
-        _ = service.beginNativeMusicPlaybackOccurrence(videoId: "video-a")
-        let second = service.prepareTrackBoundaryAdTransition(
-            isAdRisingEdge: true,
-            isCurrentDocument: true,
-            contentOccurrence: service.currentMusicPlaybackOccurrence,
-            intent: intent
-        )
-
-        guard case .retryTrack = first else {
-            Issue.record("Expected the first pre-roll advertisement to retry")
-            return
+        for _ in 0 ..< TrackBoundaryAdPolicy.maximumPreRollRetryAttempts {
+            let transition = service.prepareTrackBoundaryAdTransition(
+                isAdRisingEdge: true,
+                isCurrentDocument: true,
+                contentOccurrence: service.currentMusicPlaybackOccurrence,
+                intent: intent
+            )
+            guard case .retryTrack = transition else {
+                Issue.record("Expected a pre-roll advertisement to retry before reaching the limit")
+                return
+            }
+            service.preserveTrackBoundaryAdPlaybackSelection(
+                videoID: "video-a",
+                queueEntryID: service.currentQueueEntryID
+            )
+            _ = service.beginNativeMusicPlaybackOccurrence(videoId: "video-a")
         }
-        #expect(second == nil)
+
+        let exhaustedTransition = service.prepareTrackBoundaryAdTransition(
+            isAdRisingEdge: true,
+            isCurrentDocument: true,
+            contentOccurrence: service.currentMusicPlaybackOccurrence,
+            intent: intent
+        )
+        #expect(exhaustedTransition == nil)
     }
 
     @Test("Accepted content prevents a later ad from becoming pre-roll")

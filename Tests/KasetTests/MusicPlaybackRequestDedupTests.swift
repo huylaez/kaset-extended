@@ -7,6 +7,26 @@ import Testing
 @Suite("Music playback request deduplication", .serialized, .tags(.service))
 @MainActor
 struct MusicPlaybackRequestDedupTests {
+    @Test("A pre-roll retry reloads even while the same track is pending")
+    func preRollRetryBypassesPendingSameTrackDeduplication() {
+        #expect(PlayerService.shouldStartMusicPlaybackRequest(
+            isSameLogicalPlayback: true,
+            acceptsPlaybackRequest: true,
+            hasPendingSameLogicalLoad: true,
+            isPreRollRetryRequiringReload: true
+        ))
+    }
+
+    @Test("An ordinary pending same-track request remains deduplicated")
+    func ordinaryPendingSameTrackRequestRemainsDeduplicated() {
+        #expect(!PlayerService.shouldStartMusicPlaybackRequest(
+            isSameLogicalPlayback: true,
+            acceptsPlaybackRequest: true,
+            hasPendingSameLogicalLoad: true,
+            isPreRollRetryRequiringReload: false
+        ))
+    }
+
     @Test("A deduplicated same-song request preserves native playback state")
     func deduplicatedSongRequestPreservesPlaybackState() async {
         let videoId = "same-video"

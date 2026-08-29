@@ -231,8 +231,14 @@ extension PlayerService {
             && self.currentEpisode?.id == episode?.id
         let hasPendingSameLogicalLoad = self.pendingPlayVideoId == song.videoId
             && (self.state == .loading || self.isAwaitingPlaybackConfirmation)
-        guard !isSameLogicalPlayback
-            || (acceptsPlaybackRequest && !hasPendingSameLogicalLoad)
+        let isPreRollRetryRequiringReload = preservesPreRollAdRetryState
+            && webLoadStrategy == .forceFullPageWhenSameVideoId
+        guard Self.shouldStartMusicPlaybackRequest(
+            isSameLogicalPlayback: isSameLogicalPlayback,
+            acceptsPlaybackRequest: acceptsPlaybackRequest,
+            hasPendingSameLogicalLoad: hasPendingSameLogicalLoad,
+            isPreRollRetryRequiringReload: isPreRollRetryRequiringReload
+        )
         else {
             if let restoreClock {
                 self.logger.debug("Song \(song.videoId) already loaded; restoring playback clock")
@@ -322,6 +328,17 @@ extension PlayerService {
     }
 
     // swiftlint:enable function_body_length
+
+    nonisolated static func shouldStartMusicPlaybackRequest(
+        isSameLogicalPlayback: Bool,
+        acceptsPlaybackRequest: Bool,
+        hasPendingSameLogicalLoad: Bool,
+        isPreRollRetryRequiringReload: Bool
+    ) -> Bool {
+        !isSameLogicalPlayback
+            || isPreRollRetryRequiringReload
+            || (acceptsPlaybackRequest && !hasPendingSameLogicalLoad)
+    }
 
     private func routePlaybackToWeb(
         song: Song,

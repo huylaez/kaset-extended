@@ -22,7 +22,7 @@ The two experiments respond narrowly to those transitions:
 | Setting | Detected boundary | Native action |
 | --- | --- | --- |
 | **Skip end-of-track ads** | An ad starts within the measured terminal boundary | Complete the old track through Kaset's normal terminal path |
-| **Retry song on pre-roll ads** | An ad starts before the requested content has begun | Reload the same requested track once without changing the queue index |
+| **Retry song on pre-roll ads** | An ad starts before the requested content has begun | Reload the same requested track up to three times without changing the queue index |
 
 These features are not general ad blocking. They do not intercept network
 requests, alter YouTube responses, hide DOM elements, or handle mid-roll ads.
@@ -131,7 +131,7 @@ classify sample as authoritative content or advertisement
                          +------------+------------+
                          |                         |
                          v                         v
-                  handleTrackEnded(...)     retry same intent once
+                  handleTrackEnded(...)     retry same intent up to three times
 ```
 
 The end policy is evaluated before the pre-roll policy because an ad replacing
@@ -205,7 +205,7 @@ every guard is true:
 4. The event belongs to the current WebView document generation.
 5. No positive authoritative music progress has been accepted for the current
    playback selection.
-6. The one-retry budget has not been consumed.
+6. Fewer than three retry attempts have been made for the selection.
 7. No explicit pause intent is active.
 
 ### Retry Ownership and Budget
@@ -217,23 +217,25 @@ every guard is true:
 ```
 
 This distinguishes duplicate video IDs in a queue while still supporting
-playback outside a queue. An accepted pre-roll transition consumes the retry
-budget before starting the asynchronous reload.
+playback outside a queue. An accepted pre-roll transition increments the retry
+attempt count before starting the asynchronous reload. At most three attempts
+are allowed.
 
 The reload uses the existing native `play(...)` path with
 `forceFullPageWhenSameVideoId`. It preserves the original playback intent and
 queue entry and does not advance the queue.
 
 The replacement WebView media occurrence created by that reload does not reset
-the retry budget. Therefore this sequence terminates safely:
+the retry count. Therefore this sequence terminates safely:
 
 ```text
 requested song -> pre-roll ad -> automatic same-song retry -> another ad
-                                                         -> no second retry
+                                                         -> retry up to two more times
+                                                         -> no further retry
 ```
 
 A new explicit song selection, an explicit restart, or advancement to another
-queue item creates a new playback owner and restores one retry. Accepted
+queue item creates a new playback owner and restores all retry attempts. Accepted
 positive music progress latches the selection as having started, so later ads
 remain ineligible even if playback seeks back to zero.
 
@@ -277,7 +279,7 @@ Important protections include:
 - ad samples never overwrite authoritative music progress or duration;
 - explicit pause intent blocks both automatic actions;
 - a rising-edge requirement prevents repeated polling samples from retriggering;
-- a one-retry budget prevents pre-roll reload loops.
+- a three-attempt limit prevents pre-roll reload loops.
 
 No new dependency, entitlement, server request, cookie access, telemetry event,
 or authentication behavior is introduced by these experiments.
@@ -290,7 +292,7 @@ The focused tests cover:
 - invalid progress and duration values;
 - the measured terminal boundary and an out-of-boundary ad;
 - preservation and identity validation of the terminal occurrence;
-- one-retry budget preservation across replacement media occurrences;
+- three-attempt retry limit preservation across replacement media occurrences;
 - rejection after accepted positive content progress;
 - manual seek-to-zero behavior;
 - explicit selection reset behavior;

@@ -71,12 +71,19 @@ struct TrackBoundaryAdPolicyTests {
             Self.preRollInput(hasCurrentPlaybackIntent: false),
             Self.preRollInput(isCurrentDocument: false),
             Self.preRollInput(hasAuthoritativeContentProgressed: true),
-            Self.preRollInput(retryBudgetConsumed: true),
+            Self.preRollInput(retryAttempt: TrackBoundaryAdPolicy.maximumPreRollRetryAttempts),
             Self.preRollInput(isExplicitPauseIntentActive: true),
         ]
     )
     func everyPreRollGuardIsRequired(input: PreRollAdDecisionInput) {
         #expect(!TrackBoundaryAdPolicy.shouldRetryTrack(for: input))
+    }
+
+    @Test("Pre-roll retry accepts attempts below its fixed limit")
+    func preRollRetryAcceptsAttemptsBelowLimit() {
+        for attempt in 0 ..< TrackBoundaryAdPolicy.maximumPreRollRetryAttempts {
+            #expect(TrackBoundaryAdPolicy.shouldRetryTrack(for: Self.preRollInput(retryAttempt: attempt)))
+        }
     }
 
     @Test("Only positive finite progress marks content as started")
@@ -132,7 +139,7 @@ struct TrackBoundaryAdPolicyTests {
         hasCurrentPlaybackIntent: Bool = true,
         isCurrentDocument: Bool = true,
         hasAuthoritativeContentProgressed: Bool = false,
-        retryBudgetConsumed: Bool = false,
+        retryAttempt: Int = 0,
         isExplicitPauseIntentActive: Bool = false
     ) -> PreRollAdDecisionInput {
         PreRollAdDecisionInput(
@@ -142,7 +149,7 @@ struct TrackBoundaryAdPolicyTests {
             hasCurrentPlaybackIntent: hasCurrentPlaybackIntent,
             isCurrentDocument: isCurrentDocument,
             hasAuthoritativeContentProgressed: hasAuthoritativeContentProgressed,
-            retryBudgetConsumed: retryBudgetConsumed,
+            retryAttempt: retryAttempt,
             isExplicitPauseIntentActive: isExplicitPauseIntentActive
         )
     }
