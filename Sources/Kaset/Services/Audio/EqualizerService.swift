@@ -72,6 +72,11 @@ final class EqualizerService {
     /// rapid `PlayerService.isPlaying` toggles don't pile up pending tasks.
     @ObservationIgnored private var retryTask: Task<Void, Never>?
 
+    /// Retains a live process tap across the short paused interval that
+    /// commonly occurs while YouTube Music changes tracks. This avoids a
+    /// stop/start interruption at the beginning of the next track.
+    @ObservationIgnored private var delayedStopTask: Task<Void, Never>?
+
     /// Cancelled and replaced on every ``scheduleTapVerification()`` call
     /// for the same reason.
     @ObservationIgnored private var verificationTask: Task<Void, Never>?
@@ -108,10 +113,12 @@ final class EqualizerService {
     private static let persistDebounceInterval: Duration = .milliseconds(250)
     private static let tapVerificationPollInterval: Duration = .seconds(2)
     private static let tapVerificationProgressThreshold: TimeInterval = 8
+    private static let playbackPauseGracePeriod: Duration = .seconds(30)
 
     // MARK: - Init
 
     private let defaults: UserDefaults
+    private let playbackPauseGracePeriod: Duration
 
     /// Tests construct an isolated instance with a stub engine, stub
     /// playback probe, and a private `UserDefaults` suite; production code
@@ -120,11 +127,13 @@ final class EqualizerService {
         engine: any EqualizerAudioEngineProtocol = EqualizerAudioEngine(),
         isPlaybackActive: @escaping @MainActor () -> Bool = { PlayerService.shared?.isPlaying ?? false },
         playbackProgress: @escaping @MainActor () -> TimeInterval = { PlayerService.shared?.progress ?? 0 },
+        playbackPauseGracePeriod: Duration = EqualizerService.playbackPauseGracePeriod,
         defaults: UserDefaults = .standard
     ) {
         self.engine = engine
         self.isPlaybackActive = isPlaybackActive
         self.playbackProgress = playbackProgress
+        self.playbackPauseGracePeriod = playbackPauseGracePeriod
         self.defaults = defaults
         self.settings = Self.loadPersistedSettings(from: defaults)
         self.syncEngine()
@@ -177,6 +186,8 @@ final class EqualizerService {
             try? await Task.sleep(for: .milliseconds(50))
             guard let self, !Task.isCancelled, self.settings.isEnabled else { return }
             self.logger.info("default output device changed — rebinding equalizer engine")
+            self.delayedStopTask?.cancel()
+            self.delayedStopTask = nil
             self.engine.stop()
             self.attemptStart(playbackKnownActive: self.isPlaybackActive())
         }
@@ -244,12 +255,13 @@ final class EqualizerService {
         }
     }
 
-    /// Keeps the equalizer engine aligned with music playback. The engine
-    /// must not remain active while playback is paused, because the process
-    /// tap otherwise continues to own the output path while rendering only
-    /// silence.
+    /// Keeps the equalizer engine aligned with music playback. A short pause
+    /// grace period retains the process tap across track transitions, but a
+    /// sustained user pause releases the output path.
     func handlePlaybackStateChange(isPlaying: Bool) {
         if isPlaying {
+            self.delayedStopTask?.cancel()
+            self.delayedStopTask = nil
             self.retryStartIfEnabled()
             return
         }
@@ -257,7 +269,17 @@ final class EqualizerService {
         guard self.settings.isEnabled else { return }
         self.retryTask?.cancel()
         self.verificationTask?.cancel()
-        self.engine.stop()
+        self.delayedStopTask?.cancel()
+        self.delayedStopTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            try? await Task.sleep(for: self.playbackPauseGracePeriod)
+            guard !Task.isCancelled,
+                  self.settings.isEnabled,
+                  !self.isPlaybackActive()
+            else { return }
+            self.engine.stop()
+            self.delayedStopTask = nil
+        }
     }
 
     // MARK: - Status
@@ -323,11 +345,17 @@ final class EqualizerService {
 
     private func syncEngine() {
         if self.settings.isEnabled {
-            self.attemptStart(playbackKnownActive: false)
+            if self.engine.isRunning {
+                self.engine.apply(settings: self.settings)
+            } else {
+                self.attemptStart(playbackKnownActive: false)
+            }
         } else {
             self.retryTask?.cancel()
             self.verificationTask?.cancel()
             self.deviceChangeTask?.cancel()
+            self.delayedStopTask?.cancel()
+            self.delayedStopTask = nil
             self.engine.stop()
             self.lastFailure = nil
         }
