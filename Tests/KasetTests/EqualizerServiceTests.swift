@@ -12,6 +12,7 @@ struct EqualizerServiceTests {
     private static let suiteName = "com.kaset.test.EqualizerService"
 
     private final class PlaybackProbe: @unchecked Sendable {
+        var isActive = true
         var progress: TimeInterval = 0
     }
 
@@ -28,6 +29,7 @@ struct EqualizerServiceTests {
         startResult: Result<Void, EqualizerAudioEngine.StartFailure> = .success(()),
         isPlaybackActive: @escaping @MainActor () -> Bool = { true },
         playbackProgress: @escaping @MainActor () -> TimeInterval = { 0 },
+        playbackPauseGracePeriod: Duration = .zero,
         defaults: UserDefaults? = nil
     ) -> TestHarness {
         let testDefaults = defaults ?? UserDefaults(suiteName: self.suiteName)!
@@ -37,6 +39,7 @@ struct EqualizerServiceTests {
             engine: mock,
             isPlaybackActive: isPlaybackActive,
             playbackProgress: playbackProgress,
+            playbackPauseGracePeriod: playbackPauseGracePeriod,
             defaults: testDefaults
         )
         return TestHarness(service: service, mock: mock, defaults: testDefaults)
@@ -292,19 +295,48 @@ struct EqualizerServiceTests {
         #expect(service.status == .active)
     }
 
-    @Test("Pausing playback stops the engine and returns to standby")
-    func pauseStopsEngineAndReturnsToStandby() {
-        let harness = Self.makeService()
+    @Test("Pausing playback stops the engine after the grace period")
+    func pauseStopsEngineAfterGracePeriod() async {
+        let probe = PlaybackProbe()
+        let harness = Self.makeService(isPlaybackActive: { probe.isActive })
         let service = harness.service
         let mock = harness.mock
         service.setEnabled(true)
         #expect(service.status == .active)
 
+        probe.isActive = false
         service.handlePlaybackStateChange(isPlaying: false)
 
-        #expect(mock.stopCallCount >= 1)
+        #expect(mock.stopCallCount == 0)
+        let didStop = await self.waitUntil {
+            mock.stopCallCount >= 1
+        }
+        #expect(didStop)
         #expect(service.settings.isEnabled == true)
         #expect(service.status == .standby)
+    }
+
+    @Test("Resuming during the pause grace period keeps the engine running")
+    func resumeDuringPauseGracePeriodKeepsEngineRunning() async {
+        let probe = PlaybackProbe()
+        let harness = Self.makeService(
+            isPlaybackActive: { probe.isActive },
+            playbackPauseGracePeriod: .milliseconds(200)
+        )
+        let service = harness.service
+        let mock = harness.mock
+        service.setEnabled(true)
+        #expect(service.status == .active)
+
+        probe.isActive = false
+        service.handlePlaybackStateChange(isPlaying: false)
+        try? await Task.sleep(for: .milliseconds(50))
+        probe.isActive = true
+        service.handlePlaybackStateChange(isPlaying: true)
+        try? await Task.sleep(for: .milliseconds(250))
+
+        #expect(mock.stopCallCount == 0)
+        #expect(service.status == .active)
     }
 
     @Test("Pausing playback cancels a pending engine retry")
