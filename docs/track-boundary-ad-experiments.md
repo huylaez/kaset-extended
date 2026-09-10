@@ -205,7 +205,7 @@ every guard is true:
 4. The event belongs to the current WebView document generation.
 5. No positive authoritative music progress has been accepted for the current
    playback selection.
-6. Fewer than three retry attempts have been made for the selection.
+6. Fewer than ten retry attempts have been made for the selection.
 7. No explicit pause intent is active.
 
 ### Retry Ownership and Budget

@@ -81,6 +81,7 @@ struct TrackBoundaryAdPolicyTests {
 
     @Test("Pre-roll retry accepts attempts below its fixed limit")
     func preRollRetryAcceptsAttemptsBelowLimit() {
+        #expect(TrackBoundaryAdPolicy.maximumPreRollRetryAttempts == 10)
         for attempt in 0 ..< TrackBoundaryAdPolicy.maximumPreRollRetryAttempts {
             #expect(TrackBoundaryAdPolicy.shouldRetryTrack(for: Self.preRollInput(retryAttempt: attempt)))
         }
