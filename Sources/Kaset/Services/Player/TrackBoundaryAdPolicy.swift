@@ -43,7 +43,9 @@ enum TrackBoundaryAdPolicy {
     static let contentStartThreshold: TimeInterval = 0
 
     /// Caps reload attempts so an ad response cannot cause an infinite loop.
-    static let maximumPreRollRetryAttempts = 3
+    /// Ten attempts is intentionally generous for testing YouTube's varying
+    /// pre-roll responses while still bounding repeated document reloads.
+    static let maximumPreRollRetryAttempts = 10
 
     static func shouldCompleteTrack(for input: EndOfTrackAdDecisionInput) -> Bool {
         guard input.isEnabled,
